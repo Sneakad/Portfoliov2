@@ -3,9 +3,9 @@
 
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import SiteHeader from '@/components/home/SiteHeader';
+import SimpleProject from '@/components/simple/SimpleProject';
 import ProjectCover from '@/components/home/ProjectCover';
 import ContactForm from '@/components/home/ContactForm';
 import { homeProjects, site } from '@/data/home';
@@ -43,6 +43,8 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
   const next = homeProjects[(i + 1) % homeProjects.length];
 
   return (
+    <>
+    <div className="simple:hidden">
     <main className="min-h-screen bg-paper text-ink">
       <SiteHeader page="project" />
 
@@ -86,7 +88,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
       </section>
 
       {/* ---------- Live cover ---------- */}
-      <figure className="mx-auto flex max-w-[1440px] flex-col gap-3 px-4 md:px-10 simple:hidden">
+      <figure className="mx-auto flex max-w-[1440px] flex-col gap-3 px-4 md:px-10">
         <div className="border border-ink">
           <div className="flex h-8 items-center justify-between bg-ink px-3 font-mono text-[11px] tracking-[0.06em] text-paper">
             <span>fig.{p.n} — {p.id}.dith — <span className="hidden sm:inline">interactive · move to disperse, click to play</span><span className="sm:hidden">tap to play</span></span>
@@ -102,17 +104,6 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
         </div>
         <figcaption className="font-mono text-xs tracking-[0.04em] text-muted-ink">↳ {d.caption} {d.play}</figcaption>
       </figure>
-      {/* Simple view: a plain screenshot instead of the interactive dithered cover */}
-      <figure className="mx-auto hidden max-w-[1440px] flex-col gap-3 px-4 md:px-10 simple:flex">
-        <div className="relative aspect-[16/9] overflow-hidden border border-ink">
-          <Image src={p.image} alt={`${p.name} screenshot`} fill sizes="(min-width: 1440px) 1360px, 100vw" className="object-cover object-top" priority />
-        </div>
-        <figcaption className="font-mono text-xs tracking-[0.04em] text-muted-ink">
-          ↳ {p.name} —{' '}
-          <a href={p.live} target="_blank" rel="noreferrer" className="u-link">{p.live.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>
-        </figcaption>
-      </figure>
-
       {/* ---------- Story ---------- */}
       <div className="mx-auto flex max-w-[1440px] flex-col gap-20 px-4 pt-24 md:gap-24 md:px-10 md:pt-32">
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-16">
@@ -212,5 +203,10 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
         </div>
       </section>
     </main>
+    </div>
+    <div className="hidden simple:block">
+      <SimpleProject p={p} next={next} />
+    </div>
+    </>
   );
 }

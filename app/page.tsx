@@ -8,8 +8,8 @@ import SignalStrip from '@/components/home/SignalStrip';
 import WinCard from '@/components/home/WinCard';
 import ContactForm from '@/components/home/ContactForm';
 import SiteHeader from '@/components/home/SiteHeader';
+import SimpleHome from '@/components/simple/SimpleHome';
 import Link from 'next/link';
-import Image from 'next/image';
 import { site, timeline, roles, homeProjects, wins, stack, howIWork } from '@/data/home';
 
 
@@ -20,19 +20,22 @@ function SectionHead({ n, title, note }: { n: string; title: string; note?: stri
         <span className="font-mono text-sm tracking-[0.08em] text-muted-ink">{n}</span>
         {title}
       </h2>
-      {note && <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink simple:hidden">{note}</p>}
+      {note && <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">{note}</p>}
     </div>
   );
 }
 
 export default function Home() {
   return (
+    <>
+    {/* Dither view (default). The Simple view below is shown instead when the reader toggles it. */}
+    <div className="simple:hidden">
     <main className="min-h-screen bg-paper text-ink">
       <SiteHeader page="home" />
 
       {/* ---------- Hero ---------- */}
       <section id="top" className="scroll-mt-16 border-b border-ink">
-        <div className="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_620px] simple:lg:grid-cols-1">
+        <div className="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_620px]">
           <div className="flex flex-col justify-center gap-7 px-4 py-14 md:px-10 lg:py-20">
             <span className="inline-flex items-center gap-2 self-start border border-ink bg-paper px-2.5 py-1 font-mono text-xs uppercase tracking-[0.08em]">
               <span className="h-2 w-2 animate-pulse bg-acc outline outline-1 outline-ink" />
@@ -66,7 +69,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="flex flex-col border-t border-ink lg:border-l lg:border-r lg:border-t-0 simple:hidden">
+          <div className="flex flex-col border-t border-ink lg:border-l lg:border-r lg:border-t-0">
             <div className="relative h-[420px] sm:h-[520px] lg:h-full lg:min-h-[620px]">
               <KeycapCanvas className="absolute inset-0 h-full w-full" />
             </div>
@@ -115,9 +118,7 @@ export default function Home() {
       <section id="experience" className="scroll-mt-16 mx-auto max-w-[1440px] px-4 py-20 md:px-10">
         <SectionHead n="01" title="Experience" note="5 roles · 1 open slot" />
         <div className="mt-10">
-          <div className="simple:hidden">
-            <SignalStrip segments={timeline} />
-          </div>
+          <SignalStrip segments={timeline} />
         </div>
         <div className="mt-10 border-t border-ink">
           <a
@@ -161,11 +162,8 @@ export default function Home() {
                 </span>
                 <span>{p.tag}</span>
               </div>
-              <div className="border-b border-ink simple:hidden">
+              <div className="border-b border-ink">
                 <ProjectCover kind={p.slug} label={p.coverLabel} />
-              </div>
-              <div className="relative hidden aspect-[16/10] overflow-hidden border-b border-ink simple:block">
-                <Image src={p.image} alt={`${p.name} screenshot`} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-top" />
               </div>
               <div className="flex flex-1 flex-col gap-3 p-6">
                 <div className="flex flex-wrap items-center gap-3">
@@ -258,5 +256,10 @@ export default function Home() {
         </div>
       </section>
     </main>
+    </div>
+    <div className="hidden simple:block">
+      <SimpleHome />
+    </div>
+    </>
   );
 }

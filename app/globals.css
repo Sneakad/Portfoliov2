@@ -339,3 +339,4 @@ html[data-mode="simple"] .font-pixel { font-family: var(--font-geist-sans), syst
 html[data-mode="simple"] .lift-card:hover,
 html[data-mode="simple"] .lift-btn:hover,
 html[data-mode="simple"] .lift-btn-dark:hover { transform: none; box-shadow: none; }
+html[data-mode="simple"] body { background: #ffffff; }
