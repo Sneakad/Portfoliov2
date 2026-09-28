@@ -7,21 +7,23 @@ export type WinKind = 'trophy' | 'medal' | 'blocks';
 
 type Draw = (o: CanvasRenderingContext2D, W: number, H: number, t: number, p: number) => void;
 
-function sweep(o: CanvasRenderingContext2D, W: number, H: number, t: number, p: number) {
-  if (p < 0.01) return;
-  const sx = ((t * 0.6) % 1.6 - 0.3) * W;
-  const g = o.createLinearGradient(sx - 14, 0, sx + 14, H);
-  g.addColorStop(0, 'rgba(128,128,128,0)');
-  g.addColorStop(0.5, `rgba(128,128,128,${0.9 * p})`);
-  g.addColorStop(1, 'rgba(128,128,128,0)');
-  o.globalCompositeOperation = 'source-atop';
-  o.fillStyle = g;
-  o.fillRect(0, 0, W, H);
-  o.globalCompositeOperation = 'source-over';
-}
-
+// Still at rest; on hover each icon does its own thing (no glare sweep).
 const trophy: Draw = (o, W, H, t, p) => {
-  const cx = W / 2, top = 8 + (p > 0.01 ? Math.sin(t * 3) * 1.2 * p : 0);
+  const cx = W / 2, on = p > 0.01;
+  const hop = on ? Math.abs(Math.sin(t * 4)) * 7 * p : 0, tilt = on ? Math.sin(t * 4) * 0.14 * p : 0;
+  const top = 14 - hop;
+  if (on) {
+    // confetti bursting out of the cup
+    for (let i = 0; i < 12; i++) {
+      const ph = (t * 0.85 + i * 0.083) % 1, dir = (i % 2 ? 1 : -1) * (0.5 + (i % 5) * 0.35);
+      o.globalAlpha = p;
+      o.fillStyle = i % 3 === 0 ? '#000' : grey(0.5);
+      o.fillRect(Math.round(cx + dir * ph * 16), Math.round(top + 2 - ph * 20 + ph * ph * 26), 2, 2);
+      o.globalAlpha = 1;
+    }
+  }
+  o.fillStyle = grey(0.3); o.fillRect(cx - 12 + hop, 51, 24 - hop * 2, 3);
+  o.save(); o.translate(cx, top + 30); o.rotate(tilt); o.translate(-cx, -(top + 30));
   const g = o.createLinearGradient(cx - 16, 0, cx + 16, 0);
   g.addColorStop(0, grey(0.12)); g.addColorStop(0.35, grey(0.55)); g.addColorStop(1, grey(0.05));
   o.fillStyle = g;
@@ -36,44 +38,63 @@ const trophy: Draw = (o, W, H, t, p) => {
   o.beginPath(); o.arc(cx + 15, top + 8, 5, Math.PI * 1.5, Math.PI * 0.5); o.stroke();
   o.fillStyle = '#000'; o.fillRect(cx - 9, top + 32, 18, 4);
   o.fillStyle = grey(0.3); o.fillRect(cx - 12, top + 36, 24, 5);
-  sweep(o, W, H, t, p);
+  o.restore();
 };
 
 const medal: Draw = (o, W, H, t, p) => {
-  const cx = W / 2, cy = 31 + (p > 0.01 ? Math.sin(t * 3) * 1.2 * p : 0);
+  const cx = W / 2, on = p > 0.01, cy = 33;
+  const ang = on ? Math.sin(t * 3.2) * 0.38 * p : 0;
+  o.save(); o.translate(cx, 2); o.rotate(ang); o.translate(-cx, -2);
   o.fillStyle = grey(0.5);
-  o.beginPath(); o.moveTo(cx - 10, 4); o.lineTo(cx - 3, 4); o.lineTo(cx + 2, cy - 12); o.lineTo(cx - 5, cy - 12); o.closePath(); o.fill();
+  o.beginPath(); o.moveTo(cx - 10, 2); o.lineTo(cx - 3, 2); o.lineTo(cx + 2, cy - 12); o.lineTo(cx - 5, cy - 12); o.closePath(); o.fill();
   o.fillStyle = grey(0.15);
-  o.beginPath(); o.moveTo(cx + 10, 4); o.lineTo(cx + 3, 4); o.lineTo(cx - 2, cy - 12); o.lineTo(cx + 5, cy - 12); o.closePath(); o.fill();
+  o.beginPath(); o.moveTo(cx + 10, 2); o.lineTo(cx + 3, 2); o.lineTo(cx - 2, cy - 12); o.lineTo(cx + 5, cy - 12); o.closePath(); o.fill();
   const g = o.createRadialGradient(cx - 5, cy - 6, 1, cx, cy, 16);
   g.addColorStop(0, grey(0.6)); g.addColorStop(0.6, grey(0.3)); g.addColorStop(1, grey(0.05));
   o.fillStyle = g; o.beginPath(); o.arc(cx, cy, 15, 0, Math.PI * 2); o.fill();
   o.fillStyle = '#fff'; o.font = '800 17px sans-serif'; o.textAlign = 'center'; o.textBaseline = 'middle';
   o.fillText('2', cx, cy + 1);
-  sweep(o, W, H, t, p);
+  o.restore();
+  if (on) {
+    // twinkles around the medal
+    const sp: [number, number][] = [[-26, 20], [24, 14], [-20, 44], [27, 40], [0, 52]];
+    sp.forEach(([dx, y], i) => {
+      const tw = Math.sin(t * 5 + i * 1.9);
+      if (tw < 0.2) return;
+      const r = Math.round(1 + tw * 2), x = cx + dx;
+      o.fillStyle = i % 2 ? '#000' : grey(0.5);
+      o.fillRect(x - r, y, r * 2 + 1, 1); o.fillRect(x, y - r, 1, r * 2 + 1);
+    });
+  }
 };
 
 const blocks: Draw = (o, W, H, t, p) => {
-  const tt = p > 0.01 ? t : 0;
+  const on = p > 0.01, tt = on ? t : 0;
   const cube = (cx: number, cy: number, s: number, lift: number) => {
     cy -= lift;
     o.fillStyle = grey(0.55); o.beginPath(); o.moveTo(cx, cy - s); o.lineTo(cx + s, cy - s / 2); o.lineTo(cx, cy); o.lineTo(cx - s, cy - s / 2); o.closePath(); o.fill();
     o.fillStyle = grey(0.3); o.beginPath(); o.moveTo(cx - s, cy - s / 2); o.lineTo(cx, cy); o.lineTo(cx, cy + s); o.lineTo(cx - s, cy + s / 2); o.closePath(); o.fill();
     o.fillStyle = grey(0.05); o.beginPath(); o.moveTo(cx + s, cy - s / 2); o.lineTo(cx, cy); o.lineTo(cx, cy + s); o.lineTo(cx + s, cy + s / 2); o.closePath(); o.fill();
   };
-  const cx = W / 2, cy = H / 2 + 2;
-  const pos: [number, number][] = [[-26, 4], [26, 4], [0, -12], [0, 18]];
+  const cx = W / 2, cy = H / 2 + 4;
+  const pos: [number, number][] = [[-28, 4], [28, 4], [0, -14], [0, 18]];
   o.strokeStyle = '#000'; o.setLineDash([2, 2]);
   for (const [dx, dy] of pos) { o.beginPath(); o.moveTo(cx, cy); o.lineTo(cx + dx, cy + dy); o.stroke(); }
   o.setLineDash([]);
-  pos.forEach(([dx, dy], j) => cube(cx + dx, cy + dy, 7, p > 0.01 ? Math.max(0, Math.sin(tt * 3 + j * 1.6)) * 3 * p : 0));
-  cube(cx, cy, 11, p > 0.01 ? Math.sin(tt * 2) * 1.5 * p : 0);
-  sweep(o, W, H, t, p);
+  if (on) {
+    // packets hopping between the hub and each storage block
+    pos.forEach(([dx, dy], k) => {
+      const f = (tt * 1.3 + k * 0.27) % 1, ff = k % 2 === 0 ? f : 1 - f;
+      o.fillStyle = '#000'; o.fillRect(Math.round(cx + dx * ff) - 1, Math.round(cy + dy * ff) - 1, 3, 3);
+    });
+  }
+  pos.forEach(([dx, dy], j) => cube(cx + dx, cy + dy, 7, on ? Math.max(0, Math.sin(tt * 3.2 + j * 1.6)) * 9 * p : 0));
+  cube(cx, cy, 11, on ? (0.5 + 0.5 * Math.sin(tt * 2.4)) * 4 * p : 0);
 };
 
 const DRAW: Record<WinKind, Draw> = { trophy, medal, blocks };
 
-/** Dithered win icon: still at rest, shines and bobs while its card is hovered. */
+/** Dithered win icon: still at rest, animates while its card is hovered. */
 export default function WinIcon({ kind, active, label }: { kind: WinKind; active: boolean; label: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const activeRef = useRef(active);

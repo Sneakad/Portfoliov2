@@ -160,6 +160,18 @@ export const wins: { kind: WinKind; badge: string; title: string; body: string; 
   { kind: 'blocks', badge: 'Category winner', title: 'Web3 Infinity', body: 'Built Storz — secure, encrypted file storage on the IPFS network.', iconLabel: 'Dithered cluster of storage blocks' },
 ];
 
+// Shown right under the hero. Edit freely — principles 02/03 are written from your projects; make sure they sound like you.
+export const howIWork = {
+  title: 'Product-minded engineer.',
+  intro: 'I own features end to end — data model, API, UI — then iterate on what users actually do with it. Lately, most of that work has an LLM in the loop.',
+  now: '[ADD: what you’re building or learning right now]',
+  principles: [
+    { t: 'End to end', b: 'Data model, API, UI and deploy — I’ve shipped this way at Miivo, OtherwiseAI and Boringmarketing.' },
+    { t: 'AI with guardrails', b: 'LLMs where they earn their place: grounded in real data, with a sensible fallback when the model gets it wrong.' },
+    { t: 'Ship under pressure', b: 'Three hackathon wins came from getting a working demo in front of judges before the deadline.' },
+  ],
+};
+
 export const stack = [
   { k: 'Languages', v: 'TypeScript · JavaScript · C++ · SQL' },
   { k: 'Backend', v: 'Node.js · Bun · Hono · Express' },

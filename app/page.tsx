@@ -9,7 +9,7 @@ import WinCard from '@/components/home/WinCard';
 import ContactForm from '@/components/home/ContactForm';
 import SiteHeader from '@/components/home/SiteHeader';
 import Link from 'next/link';
-import { site, timeline, roles, homeProjects, wins, stack } from '@/data/home';
+import { site, timeline, roles, homeProjects, wins, stack, howIWork } from '@/data/home';
 
 
 function SectionHead({ n, title, note }: { n: string; title: string; note?: string }) {
@@ -71,9 +71,42 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap justify-between gap-2 border-t border-ink px-4 py-3 font-mono text-[11px] tracking-[0.04em] text-muted-ink">
               <span>↳ 14 keys typing on their own — code pops out</span>
-              <span>Hover: press &amp; ripple · Click: all keys jump</span>
+              <span>Hover: lift a key · Click: press it</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ---------- How I work (right under the hero: recruiters read this first) ---------- */}
+      <section id="about" className="scroll-mt-16 mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-4 pt-20 md:px-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-16">
+        <div className="flex flex-col gap-5">
+          <span className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">00 — How I work</span>
+          <h2 className="font-pixel text-[40px] leading-[1.02] md:text-[48px]">{howIWork.title}</h2>
+          <p className="text-lg leading-relaxed text-body">{howIWork.intro}</p>
+          <div className="grid grid-cols-2 border-t border-ink">
+            <div className="flex flex-col gap-1.5 pr-4 pt-4">
+              <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-ink">Based in</span>
+              <span className="text-[17px]">{site.location}</span>
+            </div>
+            <div className="flex flex-col gap-1.5 border-l border-ink pl-4 pt-4">
+              <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-ink">Open to</span>
+              <span className="text-[17px]">{site.relocation}</span>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 content-end gap-5 md:grid-cols-3">
+          {howIWork.principles.map((pr, i) => (
+            <article key={pr.t} className="lift-card flex flex-col border border-ink bg-paper">
+              <div className="flex h-7 items-center justify-between bg-ink px-2.5 font-mono text-[11px] tracking-[0.06em] text-paper">
+                <span>0{i + 1}</span>
+                <span aria-hidden="true" className="h-2 w-2 bg-acc" />
+              </div>
+              <div className="flex flex-col gap-2.5 p-[22px]">
+                <h3 className="font-pixel text-[26px] leading-[1.05]">{pr.t}</h3>
+                <p className="text-base leading-normal text-body">{pr.b}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
@@ -158,7 +191,7 @@ export default function Home() {
 
       {/* ---------- Wins ---------- */}
       <section id="wins" className="scroll-mt-16 mx-auto max-w-[1440px] px-4 py-20 md:px-10">
-        <SectionHead n="03" title="Wins" note="Hover to polish the hardware" />
+        <SectionHead n="03" title="Wins" note="Hover to celebrate" />
         <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
           {wins.map((w) => (
             <WinCard key={w.title} {...w} />
@@ -166,32 +199,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- Stack + About ---------- */}
+      {/* ---------- Stack ---------- */}
       <section id="stack" className="scroll-mt-16 mx-auto max-w-[1440px] px-4 py-20 md:px-10">
-        <SectionHead n="04" title="Stack" />
-        <div className="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-          <dl className="border-t border-ink">
-            {stack.map((s) => (
-              <div key={s.k} className="row-hover grid grid-cols-[130px_minmax(0,1fr)] gap-4 border-b border-ink px-2 py-4 md:grid-cols-[180px_minmax(0,1fr)]">
-                <dt className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">{s.k}</dt>
-                <dd className="text-lg">
-                  {s.highlight ? <span className="bg-acc px-1">{s.v}</span> : s.v}
-                </dd>
-              </div>
-            ))}
-          </dl>
-          <div className="flex flex-col gap-5">
-            <h3 className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">About</h3>
-            <p className="text-xl leading-snug">
-              I build full-stack products end to end — APIs, data, UI — and lately most of them have an LLM somewhere in
-              the loop.
-            </p>
-            <p className="text-base leading-normal text-body">
-              From payment bots to AI tutors to encrypted storage on IPFS, I like shipping fast, measuring what happens and
-              iterating. Looking for a team where I can own real product surface area.
-            </p>
-          </div>
-        </div>
+        <SectionHead n="04" title="Stack" note={howIWork.now} />
+        <dl className="mt-10 border-t border-ink">
+          {stack.map((s) => (
+            <div key={s.k} className="row-hover grid grid-cols-[130px_minmax(0,1fr)] gap-4 border-b border-ink px-2 py-4 md:grid-cols-[220px_minmax(0,1fr)]">
+              <dt className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">{s.k}</dt>
+              <dd className="text-lg">
+                {s.highlight ? <span className="bg-acc px-1">{s.v}</span> : s.v}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       {/* ---------- Contact ---------- */}
