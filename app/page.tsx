@@ -7,14 +7,10 @@ import ProjectCover from '@/components/home/ProjectCover';
 import SignalStrip from '@/components/home/SignalStrip';
 import WinCard from '@/components/home/WinCard';
 import ContactForm from '@/components/home/ContactForm';
+import SiteHeader from '@/components/home/SiteHeader';
+import Link from 'next/link';
 import { site, timeline, roles, homeProjects, wins, stack } from '@/data/home';
 
-const NAV = [
-  { n: '01', label: 'Experience', href: '#experience' },
-  { n: '02', label: 'Projects', href: '#projects' },
-  { n: '03', label: 'Wins', href: '#wins' },
-  { n: '04', label: 'Stack', href: '#stack' },
-];
 
 function SectionHead({ n, title, note }: { n: string; title: string; note?: string }) {
   return (
@@ -31,27 +27,7 @@ function SectionHead({ n, title, note }: { n: string; title: string; note?: stri
 export default function Home() {
   return (
     <main className="min-h-screen bg-paper text-ink">
-      {/* ---------- Header ---------- */}
-      <header className="sticky top-0 z-40 border-b border-ink bg-paper">
-        <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-6 px-4 md:px-10">
-          <a href="#top" className="font-mono text-[15px] font-medium tracking-[0.02em]">
-            aditya.mondal<span className="bg-acc px-0.5">_</span>
-          </a>
-          <nav aria-label="Primary" className="hidden items-center gap-7 font-mono text-[13px] lg:flex">
-            {NAV.map((l) => (
-              <a key={l.href} href={l.href} className="px-1 hover:bg-acc">
-                <span className="text-muted-ink">{l.n}</span> {l.label}
-              </a>
-            ))}
-            <a href={site.github} target="_blank" rel="noreferrer" className="px-1 hover:bg-acc">
-              GitHub ↗
-            </a>
-          </nav>
-          <a href="#contact" className="lift-btn border border-ink bg-acc px-4 py-2 text-sm font-semibold">
-            Hire me
-          </a>
-        </div>
-      </header>
+      <SiteHeader page="home" />
 
       {/* ---------- Hero ---------- */}
       <section id="top" className="scroll-mt-16 border-b border-ink">
@@ -162,17 +138,15 @@ export default function Home() {
                 <p className="text-base leading-normal text-body">{p.description}</p>
                 <p className="font-mono text-xs text-muted-ink">{p.stack}</p>
                 <div className="mt-auto flex flex-wrap gap-5 pt-2 font-mono text-[13px]">
+                  <Link href={`/projects/${p.id}`} className="u-link">
+                    Case study →
+                  </Link>
                   <a href={p.live} target="_blank" rel="noreferrer" className="u-link">
                     Live ↗
                   </a>
                   {p.code && (
                     <a href={p.code} target="_blank" rel="noreferrer" className="u-link">
                       Code ↗
-                    </a>
-                  )}
-                  {p.caseStudy && (
-                    <a href={p.caseStudy} className="u-link">
-                      Case study →
                     </a>
                   )}
                 </div>

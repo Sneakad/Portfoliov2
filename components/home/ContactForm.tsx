@@ -5,7 +5,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { sendEmail } from '@/actions/sendEmail';
 
 /** Reuses the existing Resend server action, so your email address never appears in the page source. */
-export default function ContactForm() {
+export default function ContactForm({ topic }: { topic?: string } = {}) {
   const [pending, setPending] = useState(false);
 
   return (
@@ -20,6 +20,7 @@ export default function ContactForm() {
       }}
     >
       <Toaster position="bottom-center" />
+      {topic && <input type="hidden" name="topic" value={topic} />}
       <label className="sr-only" htmlFor="senderEmail">Your email</label>
       <input
         id="senderEmail"
@@ -45,7 +46,7 @@ export default function ContactForm() {
         required
         maxLength={5000}
         rows={2}
-        placeholder="What are you hiring for?"
+        placeholder={topic ? `Want something like ${topic} built? Tell me about the role.` : 'What are you hiring for?'}
         className="resize-none border border-paper bg-transparent px-4 py-3 font-mono text-[15px] text-paper placeholder:text-[#8A8980] focus:outline-none focus:ring-2 focus:ring-acc"
       />
     </form>

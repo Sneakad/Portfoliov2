@@ -187,11 +187,12 @@ const TAGS: Record<CoverKind, [string, string]> = {
  * A dithered, meaningful project cover.
  * Still at rest → builds and loops while hovered → rewinds to the original frame on leave.
  */
-export default function ProjectCover({ kind, label, height = 340 }: { kind: CoverKind; label: string; height?: number }) {
+export default function ProjectCover({ kind, label, height = 340, live = false }: { kind: CoverKind; label: string; height?: number | string; live?: boolean }) {
   const wrap = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLCanvasElement>(null);
-  const hovRef = useRef(false);
-  const [hov, setHov] = useState(false);
+  const hovRef = useRef(live);
+  const [hovState, setHov] = useState(false);
+  const hov = live || hovState;
 
   useEffect(() => {
     const cv = ref.current;
@@ -246,8 +247,9 @@ export default function ProjectCover({ kind, label, height = 340 }: { kind: Cove
     return () => { cancelAnimationFrame(raf); stopObs(); };
   }, [kind]);
 
+  // live = keeps running (project pages); otherwise runs only while hovered.
   const enter = () => { hovRef.current = true; setHov(true); };
-  const leave = () => { hovRef.current = false; setHov(false); };
+  const leave = () => { hovRef.current = live; setHov(false); };
 
   return (
     <div ref={wrap} onPointerEnter={enter} onPointerLeave={leave} className="relative overflow-hidden bg-paper" style={{ height }}>

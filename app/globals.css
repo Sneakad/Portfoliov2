@@ -53,7 +53,7 @@
 
 :root {
   /* Change --acc to re-theme the whole page — canvases read it live. */
-  --acc: #c5fa6e;
+  --acc: #C5FA6E;
   --ink: #111110;
   --paper: #F1F0EA;
   --radius: 0.625rem;

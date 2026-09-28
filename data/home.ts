@@ -45,8 +45,19 @@ export const roles = [
   { n: '06', when: '2021', title: 'Rank 2 — built Dispay, a Discord payment bot', org: 'Razorpay FTX', kind: 'Hackathon' },
 ];
 
+export interface ProjectDetail {
+  caption: string; // under the live cover on the project page
+  meta: { k: string; v: string }[];
+  problem: string;
+  features: { t: string; b: string }[];
+  arch: { client: string; api: string; coreLabel: string; core: string; store: string };
+  decision: string; // the interesting engineering decision — [FILL IN]
+  outcome: { k: string; v: string }[];
+}
+
 export interface HomeProject {
   n: string;
+  id: string; // URL: /projects/<id>
   slug: CoverKind;
   name: string;
   tag: string;
@@ -55,34 +66,86 @@ export interface HomeProject {
   stack: string;
   live: string;
   code?: string; // [LINK]
-  caseStudy?: string;
   coverLabel: string;
+  detail: ProjectDetail;
 }
 
 export const homeProjects: HomeProject[] = [
   {
-    n: '01', slug: 'money', name: 'Moneysense', tag: 'Fintech · LLM',
+    n: '01', id: 'moneysense', slug: 'money', name: 'Moneysense', tag: 'Fintech · LLM',
     description: 'AI-powered financial analysis that turns raw spending into clear, intelligent insights for smarter money decisions.',
     stack: '[ADD STACK] · [ONE ENGINEERING RESULT]', live: 'https://www.moneyssense.com/',
     coverLabel: 'Scattered transactions sort themselves into a chart and trend line that keeps updating',
+    detail: {
+      caption: 'Scattered transactions sort themselves into a chart, and the trend line keeps updating.',
+      meta: [{ k: 'Role', v: '[YOUR ROLE]' }, { k: 'Timeline', v: '[DATES]' }, { k: 'Stack', v: '[ADD STACK]' }, { k: 'Status', v: 'Live' }],
+      problem: 'A bank statement tells you what you spent, not what it means. Moneysense takes raw transactions and turns them into plain-language insights, so people can see where their money goes and decide what to change.',
+      features: [
+        { t: 'Bring in spending', b: '[HOW TRANSACTIONS COME IN — upload, bank sync, manual entry]' },
+        { t: 'Sort and chart', b: 'Transactions are grouped into categories and trends you can read at a glance.' },
+        { t: 'Explain it', b: 'An LLM turns the patterns into clear, specific suggestions for smarter money decisions.' },
+      ],
+      arch: { client: '[FRONTEND]', api: '[BACKEND]', coreLabel: 'Model', core: '[LLM]', store: '[DATABASE]' },
+      decision: '[One paragraph: how the prompts stay grounded in the user’s own numbers, how financial data is kept safe, and what you would change next.]',
+      outcome: [{ k: 'Live', v: 'moneyssense.com' }, { k: '[METRIC]', v: '[e.g. users, statements analysed]' }, { k: '[LEARNING]', v: '[What you would do next]' }],
+    },
   },
   {
-    n: '02', slug: 'lern', name: 'Lern', tag: 'Edtech · Gemini', badge: 'Grand prize · Atlas Madness',
+    n: '02', id: 'lern', slug: 'lern', name: 'Lern', tag: 'Edtech · Gemini', badge: 'Grand prize · Atlas Madness',
     description: 'An AI-powered learning platform where anyone can learn anything, anytime, anywhere.',
     stack: 'Next.js · Node.js · Express · MongoDB · Gemini', live: 'https://lern.pages.dev/',
     coverLabel: 'A question prompt answered by lessons that keep writing themselves',
+    detail: {
+      caption: 'A question goes in; lessons keep writing themselves.',
+      meta: [{ k: 'Role', v: '[YOUR ROLE]' }, { k: 'Timeline', v: '[DATES]' }, { k: 'Stack', v: 'Next.js · Node.js · MongoDB · Gemini' }, { k: 'Recognition', v: 'Grand prize — Atlas Madness' }],
+      problem: 'Good learning material is scattered and one-size-fits-all. Lern lets anyone type a topic or question and get a structured lesson generated for them on the spot.',
+      features: [
+        { t: 'Ask anything', b: 'Type any topic or question — no course catalogue to search through.' },
+        { t: 'Generated lessons', b: 'Structured, step-by-step lessons written by the model (built on Bard for the hackathon, now Gemini).' },
+        { t: '[FEATURE 3]', b: '[e.g. saved lessons, progress, quizzes]' },
+      ],
+      arch: { client: 'Next.js', api: 'Node.js · Express', coreLabel: 'Model', core: 'Gemini', store: 'MongoDB' },
+      decision: '[One paragraph on the interesting engineering decision: prompting strategy, how lessons are generated and stored, what you would change.]',
+      outcome: [{ k: 'Grand prize', v: 'Atlas Madness — Google Cloud × MongoDB hackathon' }, { k: '[METRIC]', v: '[e.g. users, lessons generated]' }, { k: '[LEARNING]', v: '[What you would do next]' }],
+    },
   },
   {
-    n: '03', slug: 'codz', name: 'Codz', tag: 'Dev tools · OpenAI',
+    n: '03', id: 'codz', slug: 'codz', name: 'Codz', tag: 'Dev tools · OpenAI',
     description: 'An AI coding platform that boosts developer productivity — generate, debug and optimise code in one place.',
     stack: 'React · Node.js · Express · MongoDB · OpenAI', live: 'https://codz.pages.dev/',
     coverLabel: 'Code with a flagged bug; a review pass keeps sweeping and fixing bugs',
+    detail: {
+      caption: 'A review pass keeps sweeping the file, finding and fixing bugs.',
+      meta: [{ k: 'Role', v: '[YOUR ROLE]' }, { k: 'Timeline', v: '[DATES]' }, { k: 'Stack', v: 'React · Node.js · Express · MongoDB · OpenAI' }, { k: 'Status', v: 'Live' }],
+      problem: 'Developers bounce between an editor, docs and a chatbot to write, debug and tune code. Codz puts generation, debugging and optimisation in one workspace.',
+      features: [
+        { t: 'Generate', b: 'Describe what you need and get working code back.' },
+        { t: 'Debug', b: 'Paste broken code and get the bug located and explained.' },
+        { t: 'Optimise', b: 'Get suggestions to make existing code faster and cleaner.' },
+      ],
+      arch: { client: 'React', api: 'Node.js · Express', coreLabel: 'Model', core: 'OpenAI', store: 'MongoDB' },
+      decision: '[One paragraph: how requests are routed to generate / debug / optimise, how you handle long files and bad model output, what you would change.]',
+      outcome: [{ k: 'Live', v: 'codz.pages.dev' }, { k: '[METRIC]', v: '[e.g. users, requests handled]' }, { k: '[LEARNING]', v: '[What you would do next]' }],
+    },
   },
   {
-    n: '04', slug: 'storz', name: 'Storz', tag: 'Distributed · IPFS', badge: 'Winner · Web3 Infinity',
+    n: '04', id: 'storz', slug: 'storz', name: 'Storz', tag: 'Distributed · IPFS', badge: 'Winner · Web3 Infinity',
     description: 'Open-source, decentralised and encrypted file sharing and storage, built on IPFS.',
     stack: 'React · Node.js · Express · MongoDB · IPFS', live: 'https://storz.pages.dev/',
     coverLabel: 'A file splits into encrypted shards across a ring of nodes with packets flowing between them',
+    detail: {
+      caption: 'One file splits into encrypted shards across a ring of nodes.',
+      meta: [{ k: 'Role', v: '[YOUR ROLE]' }, { k: 'Timeline', v: '[DATES]' }, { k: 'Stack', v: 'React · Node.js · Express · MongoDB · IPFS' }, { k: 'Recognition', v: 'Winner — Web3 Infinity' }],
+      problem: 'Most file sharing depends on one company’s servers. Storz encrypts files and stores them on IPFS, so sharing stays private and doesn’t rely on a single host.',
+      features: [
+        { t: 'Encrypt first', b: 'Files are encrypted before they leave the browser [CONFIRM].' },
+        { t: 'Store on IPFS', b: 'Content is pinned to the decentralised IPFS network.' },
+        { t: 'Share', b: '[HOW SHARING WORKS — link, CID, access control]' },
+      ],
+      arch: { client: 'React', api: 'Node.js · Express', coreLabel: 'Network', core: 'IPFS', store: 'MongoDB' },
+      decision: '[One paragraph: where encryption happens and how keys are handled, what MongoDB stores vs IPFS, what you would change.]',
+      outcome: [{ k: 'Winner', v: 'Web3 Infinity hackathon' }, { k: 'Open source', v: '[REPO LINK]' }, { k: '[LEARNING]', v: '[What you would do next]' }],
+    },
   },
 ];
 
