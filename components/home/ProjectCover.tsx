@@ -158,7 +158,7 @@ function storz(x: number, y: number, t: number, p: number, ar: number, I: Input)
   const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
   const cx = ar / 2, cy = 0.5, dw = Math.min(0.34, ar * 0.3), dh = 0.74, dl = cx - dw / 2, dt = cy - dh / 2;
   const cols = 3, rows = 4, cw = dw / cols, ch = dh / rows, n = cols * rows;
-  const sc = 1 - 0.45 * e, live = p >= 0.999, rx = ar * 0.4, ry = 0.38;
+  const sc = 1 - 0.45 * e, live = p >= 0.95, rx = ar * 0.4, ry = 0.38;
   if (e > 0.55) {
     const la = (e - 0.55) / 0.45;
     for (let j = 0; j < n; j++) {
@@ -315,7 +315,8 @@ export default function ProjectCover({
       I.ck = I.n ? ct - clickAt.current : 99;
       const on = hovRef.current && !reduced;
       const tg = on ? 1 : 0;
-      let nxt = p + (tg - p) * (tg > p ? 0.035 : 0.09);
+      // Storz builds ~3× faster so its packets start flowing almost immediately
+      let nxt = p + (tg - p) * (tg > p ? (kind === 'storz' ? 0.1 : 0.035) : 0.09);
       if (Math.abs(nxt - tg) < 0.004) nxt = tg;
       const moving = nxt !== p;
       p = nxt;
