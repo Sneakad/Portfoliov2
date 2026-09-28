@@ -225,7 +225,8 @@ export default function KeycapCanvas({ className }: { className?: string }) {
       o.clearRect(0, 0, W, H);
       scene(W, H, t);
       const src = o.getImageData(0, 0, W, H).data, d = img.data;
-      const R2 = 500;
+      // hover: wide, stretchy scatter (legends stay sharp on their own layer)
+      const R2 = 1300;
       for (let y = 0; y < H; y++) {
         const br = BAYER[y & 7];
         for (let x = 0; x < W; x++) {
@@ -233,11 +234,11 @@ export default function KeycapCanvas({ className }: { className?: string }) {
           if (mouse.on) {
             dxm = x - mouse.x; dym = y - mouse.y;
             const dd = dxm * dxm + dym * dym;
-            if (dd < R2 * 4) { push = Math.exp(-dd / R2); amt += push * 4; }
+            if (dd < R2 * 4) { push = Math.exp(-dd / R2); amt += push * 13; }
           }
           let sx = x, sy = y;
-          if (amt > 0.3) { sx += (rand(x, y, frame) * 2 - 1) * amt; sy += (rand(y, x, frame + 11) * 2 - 1) * amt; }
-          if (push > 0) { sx -= dxm * push * 0.15; sy -= dym * push * 0.15; }
+          if (amt > 0.3) { sx += (rand(x, y, frame) * 2 - 1) * amt * 1.5; sy += (rand(y, x, frame + 11) * 2 - 1) * amt * 0.8; }
+          if (push > 0) { sx -= dxm * push * 0.3; sy -= dym * push * 0.3; }
           const ix = sx | 0, iy = sy | 0, k = (y * W + x) * 4;
           if (ix < 0 || iy < 0 || ix >= W || iy >= H) { d[k + 3] = 0; continue; }
           const si = (iy * W + ix) * 4;
