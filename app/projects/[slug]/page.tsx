@@ -88,7 +88,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
       <figure className="mx-auto flex max-w-[1440px] flex-col gap-3 px-4 md:px-10">
         <div className="border border-ink">
           <div className="flex h-8 items-center justify-between bg-ink px-3 font-mono text-[11px] tracking-[0.06em] text-paper">
-            <span>fig.{p.n} — {p.id}.dith — running live</span>
+            <span>fig.{p.n} — {p.id}.dith — <span className="hidden sm:inline">interactive · move to disperse, click to play</span><span className="sm:hidden">tap to play</span></span>
             <span aria-hidden="true" className="flex gap-1.5">
               <span className="h-[9px] w-[9px] border border-paper" />
               <span className="h-[9px] w-[9px] border border-paper" />
@@ -96,10 +96,10 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
             </span>
           </div>
           <div className="h-[320px] sm:h-[440px] lg:h-[560px]">
-            <ProjectCover kind={p.slug} label={p.coverLabel} height="100%" live />
+            <ProjectCover kind={p.slug} label={p.coverLabel} height="100%" interactive />
           </div>
         </div>
-        <figcaption className="font-mono text-xs tracking-[0.04em] text-muted-ink">↳ {d.caption}</figcaption>
+        <figcaption className="font-mono text-xs tracking-[0.04em] text-muted-ink">↳ {d.caption} {d.play}</figcaption>
       </figure>
 
       {/* ---------- Story ---------- */}

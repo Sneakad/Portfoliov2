@@ -47,6 +47,7 @@ export const roles = [
 
 export interface ProjectDetail {
   caption: string; // under the live cover on the project page
+  play: string; // how to interact with the cover
   meta: { k: string; v: string }[];
   problem: string;
   features: { t: string; b: string }[];
@@ -78,6 +79,7 @@ export const homeProjects: HomeProject[] = [
     coverLabel: 'Scattered transactions sort themselves into a chart and trend line that keeps updating',
     detail: {
       caption: 'Scattered transactions sort themselves into a chart, and the trend line keeps updating.',
+      play: 'Point at a bar to inspect it; click to load new data.',
       meta: [{ k: 'Role', v: '[YOUR ROLE]' }, { k: 'Timeline', v: '[DATES]' }, { k: 'Stack', v: '[ADD STACK]' }, { k: 'Status', v: 'Live' }],
       problem: 'A bank statement tells you what you spent, not what it means. Moneysense takes raw transactions and turns them into plain-language insights, so people can see where their money goes and decide what to change.',
       features: [
@@ -97,6 +99,7 @@ export const homeProjects: HomeProject[] = [
     coverLabel: 'A question prompt answered by lessons that keep writing themselves',
     detail: {
       caption: 'A question goes in; lessons keep writing themselves.',
+      play: 'Move over a lesson to highlight it; click to ask a new question.',
       meta: [{ k: 'Role', v: '[YOUR ROLE]' }, { k: 'Timeline', v: '[DATES]' }, { k: 'Stack', v: 'Next.js · Node.js · MongoDB · Gemini' }, { k: 'Recognition', v: 'Grand prize — Atlas Madness' }],
       problem: 'Good learning material is scattered and one-size-fits-all. Lern lets anyone type a topic or question and get a structured lesson generated for them on the spot.',
       features: [
@@ -116,6 +119,7 @@ export const homeProjects: HomeProject[] = [
     coverLabel: 'Code with a flagged bug; a review pass keeps sweeping and fixing bugs',
     detail: {
       caption: 'A review pass keeps sweeping the file, finding and fixing bugs.',
+      play: 'Click a line to plant a bug, then move down to sweep it fixed.',
       meta: [{ k: 'Role', v: '[YOUR ROLE]' }, { k: 'Timeline', v: '[DATES]' }, { k: 'Stack', v: 'React · Node.js · Express · MongoDB · OpenAI' }, { k: 'Status', v: 'Live' }],
       problem: 'Developers bounce between an editor, docs and a chatbot to write, debug and tune code. Codz puts generation, debugging and optimisation in one workspace.',
       features: [
@@ -135,6 +139,7 @@ export const homeProjects: HomeProject[] = [
     coverLabel: 'A file splits into encrypted shards across a ring of nodes with packets flowing between them',
     detail: {
       caption: 'One file splits into encrypted shards across a ring of nodes.',
+      play: 'Point at a node to route packets to it; click to re-shard the file.',
       meta: [{ k: 'Role', v: '[YOUR ROLE]' }, { k: 'Timeline', v: '[DATES]' }, { k: 'Stack', v: 'React · Node.js · Express · MongoDB · IPFS' }, { k: 'Recognition', v: 'Winner — Web3 Infinity' }],
       problem: 'Most file sharing depends on one company’s servers. Storz encrypts files and stores them on IPFS, so sharing stays private and doesn’t rely on a single host.',
       features: [
