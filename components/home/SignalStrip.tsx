@@ -33,7 +33,8 @@ export default function SignalStrip({ segments, start = 2021, end = 2027 }: { se
       const W = Math.max(8, Math.round(cv.clientWidth / cell)), H = Math.max(8, Math.round(cv.clientHeight / cell));
       if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; img = null; }
       if (!img) img = ctx.createImageData(W, H);
-      const d = img.data, pal = [INK, readAccent(cv), PAPER];
+      // dark strip: empty years stay ink, shipped density glows paper
+      const d = img.data, pal = [PAPER, readAccent(cv), INK];
       const h = hover.current, active = h.on ? segments[h.seg] : null;
       for (let y = 0; y < H; y++) {
         const br = BAYER[y & 7], yn = y / H;
@@ -96,11 +97,11 @@ export default function SignalStrip({ segments, start = 2021, end = 2027 }: { se
         ))}
       </div>
       <div className="border border-ink">
-        <div className="flex h-7 items-center justify-between bg-ink px-3 font-mono text-[11px] tracking-[0.06em] text-paper">
+        <div className="flex h-7 items-center justify-between border-b border-[#3A3934] bg-ink px-3 font-mono text-[11px] tracking-[0.06em] text-paper">
           <span>signal.log — density grows with every year shipped</span>
           <span>{start} ▸ next</span>
         </div>
-        <div onPointerMove={onMove} onPointerLeave={onLeave} className="cursor-ew-resize bg-paper">
+        <div onPointerMove={onMove} onPointerLeave={onLeave} className="cursor-ew-resize bg-ink">
           <canvas
             ref={ref}
             role="img"
