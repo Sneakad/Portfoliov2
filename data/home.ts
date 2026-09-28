@@ -22,18 +22,18 @@ export const site = {
 export interface TimelineSegment {
   from: number; // decimal year
   to: number;
-  label: string; // marker above the strip
+  label: string; // short name shown under the block
   readout: string; // text shown on hover
 }
 
 export const timeline: TimelineSegment[] = [
-  { from: 2021.0, to: 2022.2, label: '06', readout: '06 · 2021 — Rank 2, Razorpay FTX Hackathon' },
-  { from: 2022.2, to: 2023.0, label: '05', readout: '05 · 2022 — Software Developer Intern, APICon.io' },
-  { from: 2023.0, to: 2023.35, label: '04', readout: '04 · 2023 — Technical Content Writer, GeeksforGeeks' },
-  { from: 2023.35, to: 2023.7, label: '03', readout: '03 · 2023 — Software Developer, Boringmarketing' },
-  { from: 2023.7, to: 2024.1, label: '02', readout: '02 · 2023 — Software Developer, OtherwiseAI' },
-  { from: 2024.1, to: 2026.5, label: '01', readout: '01 · 2024 — AI Engineer, Miivo' },
-  { from: 2026.5, to: 2027.0, label: 'Next', readout: 'Next — Software Engineer · AI Engineer, your team?' },
+  { from: 2021.0, to: 2022.2, label: 'Razorpay FTX', readout: '06 · 2021 — Rank 2, Razorpay FTX Hackathon' },
+  { from: 2022.2, to: 2023.0, label: 'APICon.io', readout: '05 · 2022 — Software Developer Intern, APICon.io' },
+  { from: 2023.0, to: 2023.35, label: 'GeeksforGeeks', readout: '04 · 2023 — Technical Content Writer, GeeksforGeeks' },
+  { from: 2023.35, to: 2023.7, label: 'Boringmarketing', readout: '03 · 2023 — Software Developer, Boringmarketing' },
+  { from: 2023.7, to: 2024.1, label: 'OtherwiseAI', readout: '02 · 2023 — Software Developer, OtherwiseAI' },
+  { from: 2024.1, to: 2026.5, label: 'Miivo', readout: '01 · 2024 — AI Engineer, Miivo' },
+  { from: 2026.5, to: 2027.0, label: 'Next →', readout: 'Next — Software Engineer · AI Engineer, your team?' },
 ];
 
 export const roles = [
