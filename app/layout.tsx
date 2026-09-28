@@ -5,6 +5,7 @@ import { GeistPixelSquare } from "geist/font/pixel";
 import "./globals.css";
 import { ActiveSectionContextProvider } from "@/context/active-section-context";
 import LenisProvider from "@/components/LenisProvider";
+import { MODE_BOOT } from "@/lib/mode";
 
 export const metadata: Metadata = {
   title: "Aditya Mondal — Software Engineer",
@@ -22,7 +23,12 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable}`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* apply the saved Simple/Dither choice before first paint */}
+        <script dangerouslySetInnerHTML={{ __html: MODE_BOOT }} />
+      </head>
       <body className="bg-paper text-ink antialiased">
         <ActiveSectionContextProvider>
           <LenisProvider>{children}</LenisProvider>

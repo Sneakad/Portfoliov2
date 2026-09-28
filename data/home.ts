@@ -68,6 +68,7 @@ export interface HomeProject {
   live: string;
   code?: string; // [LINK]
   coverLabel: string;
+  image: string; // screenshot in /public, shown in Simple view
   detail: ProjectDetail;
 }
 
@@ -77,6 +78,7 @@ export const homeProjects: HomeProject[] = [
     description: 'AI-powered financial analysis that turns raw spending into clear, intelligent insights for smarter money decisions.',
     stack: '[ADD STACK] · [ONE ENGINEERING RESULT]', live: 'https://www.moneyssense.com/',
     coverLabel: 'Scattered transactions sort themselves into a chart and trend line that keeps updating',
+    image: '/moneyssense.jpg',
     detail: {
       caption: 'Scattered transactions sort themselves into a chart, and the trend line keeps updating.',
       play: 'Point at a bar to inspect it; click to load new data.',
@@ -97,6 +99,7 @@ export const homeProjects: HomeProject[] = [
     description: 'An AI-powered learning platform where anyone can learn anything, anytime, anywhere.',
     stack: 'Next.js · Node.js · Express · MongoDB · Gemini', live: 'https://lern.pages.dev/',
     coverLabel: 'A question prompt answered by lessons that keep writing themselves',
+    image: '/lern.png',
     detail: {
       caption: 'A question goes in; lessons keep writing themselves.',
       play: 'Move over a lesson to highlight it; click to ask a new question.',
@@ -117,6 +120,7 @@ export const homeProjects: HomeProject[] = [
     description: 'An AI coding platform that boosts developer productivity — generate, debug and optimise code in one place.',
     stack: 'React · Node.js · Express · MongoDB · OpenAI', live: 'https://codz.pages.dev/',
     coverLabel: 'Code with a flagged bug; a review pass keeps sweeping and fixing bugs',
+    image: '/codz.png',
     detail: {
       caption: 'A review pass keeps sweeping the file, finding and fixing bugs.',
       play: 'Click a line to plant a bug, then move down to sweep it fixed.',
@@ -137,6 +141,7 @@ export const homeProjects: HomeProject[] = [
     description: 'Open-source, decentralised and encrypted file sharing and storage, built on IPFS.',
     stack: 'React · Node.js · Express · MongoDB · IPFS', live: 'https://storz.pages.dev/',
     coverLabel: 'A file splits into encrypted shards across a ring of nodes with packets flowing between them',
+    image: '/storz.png',
     detail: {
       caption: 'One file splits into encrypted shards across a ring of nodes.',
       play: 'Point at a node to route packets to it; click to re-shard the file.',

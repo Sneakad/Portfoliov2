@@ -11,7 +11,9 @@ export default function WinCard({ kind, badge, title, body, iconLabel }: { kind:
       onPointerLeave={() => setHov(false)}
       className="lift-card flex flex-col border border-ink bg-paper"
     >
-      <WinIcon kind={kind} active={hov} label={iconLabel} />
+      <div className="simple:hidden">
+        <WinIcon kind={kind} active={hov} label={iconLabel} />
+      </div>
       <div className="flex flex-col gap-2.5 p-[22px]">
         <span className="self-start bg-acc px-[7px] py-[3px] font-mono text-[11px] uppercase tracking-[0.08em]">{badge}</span>
         <span className="font-pixel text-[30px] leading-[1.05]">{title}</span>

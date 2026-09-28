@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+/* simple:… applies when the reader switches to the plain, easy-to-read version */
+@custom-variant simple (&:where([data-mode="simple"], [data-mode="simple"] *));
 
 @theme inline {
   --color-background: var(--background);
@@ -331,3 +333,9 @@
   .lift-card, .lift-btn, .lift-btn-dark { transition: none; }
   .lift-card:hover, .lift-btn:hover, .lift-btn-dark:hover { transform: none; }
 }
+
+/* ---------- Simple view: no dither, plain type, calm hovers ---------- */
+html[data-mode="simple"] .font-pixel { font-family: var(--font-geist-sans), system-ui, sans-serif; font-weight: 650; letter-spacing: -0.03em; }
+html[data-mode="simple"] .lift-card:hover,
+html[data-mode="simple"] .lift-btn:hover,
+html[data-mode="simple"] .lift-btn-dark:hover { transform: none; box-shadow: none; }

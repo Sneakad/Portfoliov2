@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { prefersReducedMotion } from '@/lib/dither';
 import { site } from '@/data/home';
+import ModeToggle, { getMode } from './ModeToggle';
 
 const GLYPHS = '!<>-_\\/[]{}=+*^?#%&@$01';
 
@@ -14,7 +15,7 @@ function useScramble(full: string, active: boolean) {
 
   useEffect(() => {
     if (timer.current) clearInterval(timer.current);
-    if (!active || prefersReducedMotion()) { setText(full); return; }
+    if (!active || prefersReducedMotion() || getMode() === 'simple') { setText(full); return; }
     let f = 0;
     timer.current = setInterval(() => {
       f++;
@@ -95,6 +96,8 @@ export default function SiteHeader({ page = 'home' }: { page?: 'home' | 'project
           {links.map((l) => <NavLink key={l.label} {...l} />)}
           <NavLink label="GitHub ↗" href={site.github} external />
         </nav>
+        <div className="flex items-center gap-2">
+          <ModeToggle />
         <Link
           href="#contact"
           aria-label="Hire me"
@@ -106,6 +109,7 @@ export default function SiteHeader({ page = 'home' }: { page?: 'home' | 'project
           <span aria-hidden="true" className="h-2 w-2 bg-acc" />
           <span aria-hidden="true" className="whitespace-pre font-mono">{hire}</span>
         </Link>
+        </div>
       </div>
     </header>
   );
