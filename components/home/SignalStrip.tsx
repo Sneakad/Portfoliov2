@@ -4,14 +4,14 @@ import { useEffect, useRef, useState } from 'react';
 import { BAYER, INK, PAPER, observeVisible, prefersReducedMotion, readAccent } from '@/lib/dither';
 import type { TimelineSegment } from '@/data/home';
 
-// Dither density per role, oldest → newest (the last segment is the open "Next" slot).
-const LEVELS = [0.2, 0.32, 0.44, 0.56, 0.68, 0.86];
+// Dither density per role ramps from sparse (oldest) to dense (newest); the last segment is the open "Next" slot.
+const level = (i: number, roles: number) => 0.22 + (0.64 * i) / Math.max(1, roles - 1);
 
 /**
  * signal.log — one clean dithered block per role on a dark strip, denser = more recent.
  * Hover (or tap) a block to flood it with the accent colour and read the role below.
  */
-export default function SignalStrip({ segments, start = 2021, end = 2027 }: { segments: TimelineSegment[]; start?: number; end?: number }) {
+export default function SignalStrip({ segments, start = 2022, end = 2027 }: { segments: TimelineSegment[]; start?: number; end?: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const hovRef = useRef(-1);
   const [seg, setSeg] = useState(-1);
@@ -52,7 +52,7 @@ export default function SignalStrip({ segments, start = 2021, end = 2027 }: { se
             else if (blink && x >= x0 + 5 && x <= x0 + 7 && y >= 4 && y <= H - 5) c = ACC;
           } else if (i === hov) c = ACC;
           else {
-            const f = (x - x0) / Math.max(1, x1 - x0), L = (LEVELS[i] ?? 0.86) + 0.08 * (f - 0.5);
+            const f = (x - x0) / Math.max(1, x1 - x0), L = level(i, last) + 0.08 * (f - 0.5);
             c = L > BAYER[y & 7][x & 7] ? PAPER : INK;
           }
           const j = (y * W + x) * 4;
@@ -94,7 +94,7 @@ export default function SignalStrip({ segments, start = 2021, end = 2027 }: { se
           <canvas
             ref={ref}
             role="img"
-            aria-label="Timeline from 2021: six blocks, one per role, each denser than the last, ending in an open slot marked Next."
+            aria-label={`Timeline from ${start}: ${last} blocks, one per role, each denser than the last, ending in an open slot marked Next.`}
             className="block h-16 w-full"
             style={{ imageRendering: 'pixelated' }}
           />

@@ -27,22 +27,21 @@ export interface TimelineSegment {
 }
 
 export const timeline: TimelineSegment[] = [
-  { from: 2021.0, to: 2022.2, label: 'Razorpay FTX', readout: '06 · 2021 — Rank 2, Razorpay FTX Hackathon' },
-  { from: 2022.2, to: 2023.0, label: 'APICon.io', readout: '05 · 2022 — Software Developer Intern, APICon.io' },
-  { from: 2023.0, to: 2023.35, label: 'GeeksforGeeks', readout: '04 · 2023 — Technical Content Writer, GeeksforGeeks' },
-  { from: 2023.35, to: 2023.7, label: 'Boringmarketing', readout: '03 · 2023 — Software Developer, Boringmarketing' },
-  { from: 2023.7, to: 2024.1, label: 'OtherwiseAI', readout: '02 · 2023 — Software Developer, OtherwiseAI' },
-  { from: 2024.1, to: 2026.5, label: 'Miivo', readout: '01 · 2024 — AI Engineer, Miivo' },
-  { from: 2026.5, to: 2027.0, label: 'Next →', readout: 'Next — Software Engineer · AI Engineer, your team?' },
+  { from: 2022.0, to: 2023.0, label: 'APICon.io', readout: '05 · 2022 — Software Developer Intern, APICon.io' },
+  { from: 2023.0, to: 2023.4, label: 'GeeksforGeeks', readout: '04 · 2023 — Technical Content Writer, GeeksforGeeks' },
+  { from: 2023.4, to: 2024.0, label: 'Boringmarketing', readout: '03 · 2023 – 2024 — Software Developer, Boringmarketing' },
+  { from: 2024.0, to: 2025.0, label: 'OtherwiseAI', readout: '02 · 2024 – 2025 — Software Developer, OtherwiseAI' },
+  { from: 2025.0, to: 2026.75, label: 'Miivo', readout: '01 · 2025 – Sep 2026 — AI Engineer, Miivo' },
+  { from: 2026.75, to: 2027.0, label: 'Next →', readout: 'Next — Software Engineer · AI Engineer, your team?' },
 ];
 
+// Newest first. Hackathons live in the Wins section, not here.
 export const roles = [
-  { n: '01', when: '2024 — [END]', title: 'AI Engineer', org: 'Miivo', kind: 'Full-time' },
-  { n: '02', when: '2023', title: 'Software Developer', org: 'OtherwiseAI', kind: 'Engineering' },
-  { n: '03', when: '2023', title: 'Software Developer', org: 'Boringmarketing', kind: 'Engineering' },
+  { n: '01', when: '2025 — Sep 2026', title: 'AI Engineer', org: 'Miivo', kind: 'Full-time' },
+  { n: '02', when: '2024 — 2025', title: 'Software Developer', org: 'OtherwiseAI', kind: 'Engineering' },
+  { n: '03', when: '2023 — 2024', title: 'Software Developer', org: 'Boringmarketing', kind: 'Engineering' },
   { n: '04', when: '2023', title: 'Technical Content Writer', org: 'GeeksforGeeks', kind: 'Writing' },
   { n: '05', when: '2022', title: 'Software Developer Intern', org: 'APICon.io', kind: 'Internship' },
-  { n: '06', when: '2021', title: 'Rank 2 — built Dispay, a Discord payment bot', org: 'Razorpay FTX', kind: 'Hackathon' },
 ];
 
 export interface ProjectDetail {
