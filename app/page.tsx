@@ -85,11 +85,11 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-3">
               {site.showResume ? (
-                <a href={site.resumeUrl} className="lift-btn border border-ink bg-ink px-5 py-3 text-[15px] font-semibold text-paper">
+                <a href={site.resumeUrl} className="lift-btn lift-btn-primary border border-ink bg-ink px-5 py-3 text-[15px] font-semibold text-paper">
                   Résumé ↓
                 </a>
               ) : (
-                <a href="#contact" className="lift-btn border border-ink bg-ink px-5 py-3 text-[15px] font-semibold text-paper">
+                <a href="#contact" className="lift-btn lift-btn-primary border border-ink bg-ink px-5 py-3 text-[15px] font-semibold text-paper">
                   Get in touch ↓
                 </a>
               )}
@@ -292,7 +292,6 @@ export default function Home() {
               </a>
             ))}
           </div>
-          <p className="max-w-[720px] text-base leading-relaxed text-[#B4B3AB]">{seo.bio}</p>
           <footer className="flex flex-wrap justify-between gap-3 font-mono text-xs text-[#8A8980]">
             <span>© {new Date().getFullYear()} {site.name}</span>
           </footer>

@@ -4,7 +4,6 @@ import { ArrowUpRight, FileText, Github, Linkedin, MessageCircle, Twitter } from
 import LogoMark from '@/components/home/LogoMark';
 import ModeToggle from '@/components/home/ModeToggle';
 import { site } from '@/data/home';
-import { seo } from '@/data/seo';
 
 export const SOCIALS = [
   { label: 'GitHub', handle: 'Sneakad', href: site.github, Icon: Github },
@@ -75,7 +74,6 @@ export function SimpleFooter() {
           </li>
           )}
         </ul>
-        <p className="text-[14px] leading-relaxed text-[#666]">{seo.bio}</p>
         <div className="flex flex-wrap justify-between gap-2 text-[13px] text-[#888]">
           <span>© {new Date().getFullYear()} {site.name}</span>
           <span>{site.location}</span>

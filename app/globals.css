@@ -334,6 +334,8 @@
   .lift-btn:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--ink); }
   .lift-btn-dark { transition: transform .15s ease, box-shadow .15s ease; }
   .lift-btn-dark:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--paper); }
+  /* primary (filled ink) buttons: the lift shadow is lime, so it shows against the dark button */
+  .lift-btn-primary:hover { box-shadow: 5px 5px 0 var(--acc); }
   .row-hover { transition: background .12s ease; }
   .row-hover:hover { background: var(--acc); }
   .u-link { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
