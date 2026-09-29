@@ -52,7 +52,7 @@ export default function SimpleHome() {
 
         {/* About */}
         <section className="flex flex-col gap-4">
-          <H2>About</H2>
+          <H2 id="s-about">About</H2>
           <p className="text-[16px] leading-relaxed text-[#444]">{howIWork.intro}</p>
           <ul className="flex flex-col gap-2.5">
             {howIWork.principles.map((p) => (

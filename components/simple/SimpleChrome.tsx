@@ -23,6 +23,7 @@ export function SimpleNav({ home = true }: { home?: boolean }) {
           <span className="hidden sm:inline">Aditya Mondal</span>
         </Link>
         <nav aria-label="Primary" className="flex items-center gap-1 text-sm text-[#555]">
+          <a href={`${base}#s-about`} className="hidden rounded-md px-2.5 py-1.5 hover:bg-[#F4F4F4] hover:text-ink sm:block">About</a>
           <a href={`${base}#s-work`} className="hidden rounded-md px-2.5 py-1.5 hover:bg-[#F4F4F4] hover:text-ink sm:block">Work</a>
           <a href={`${base}#s-projects`} className="hidden rounded-md px-2.5 py-1.5 hover:bg-[#F4F4F4] hover:text-ink sm:block">Projects</a>
           <a href={home ? '#s-contact' : '#s-contact'} className="rounded-md px-2.5 py-1.5 hover:bg-[#F4F4F4] hover:text-ink">Contact</a>
