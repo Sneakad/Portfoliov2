@@ -204,13 +204,13 @@ export const wins: { kind: WinKind; badge: string; title: string; body: string; 
 
 // Shown right under the hero. Edit freely — principles 02/03 are written from your projects; make sure they sound like you.
 export const howIWork = {
-  title: 'Product-minded engineer.',
-  intro: 'I own features end to end (data model, API, UI), then iterate on what users actually do with it. Lately, most of that work has an LLM in the loop.',
+  title: 'Hi, I’m Aditya.',
+  intro: 'A creative software developer specializing in AI-integrated web applications. I deliver seamless, user-friendly and impactful solutions by combining advanced AI capabilities with innovative design.',
   now: '[ADD: what you’re building or learning right now]',
   principles: [
-    { t: 'End to end', b: 'Data model, API, UI and deploy. I’ve shipped this way at Miivo AI, OtherwiseAI and Boringmarketing.' },
-    { t: 'AI with guardrails', b: 'LLMs where they earn their place: grounded in real data, with a sensible fallback when the model gets it wrong.' },
-    { t: 'Ship under pressure', b: 'Three hackathon wins came from getting a working demo in front of judges before the deadline.' },
+    { t: 'AI-integrated web apps', b: 'Full-stack products with AI built in, from data model and API to UI and deploy. Shipped at Miivo AI, OtherwiseAI and Boringmarketing.' },
+    { t: 'Seamless and user-friendly', b: 'Interfaces people understand on first use. I design the UI I build, so it feels right before it ships.' },
+    { t: 'Impactful by design', b: 'Advanced AI where it earns its place: grounded in real data, with a sensible fallback when the model gets it wrong.' },
   ],
 };
 

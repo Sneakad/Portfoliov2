@@ -112,7 +112,7 @@ export default function Home() {
       {/* ---------- How I work (right under the hero: recruiters read this first) ---------- */}
       <section id="about" className="scroll-mt-16 mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-4 pt-20 md:px-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-16">
         <div className="flex flex-col gap-5">
-          <span className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">00 · How I work</span>
+          <span className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">00 · About me</span>
           <h2 className="font-pixel text-[40px] leading-[1.02] md:text-[48px]">{howIWork.title}</h2>
           <p className="text-lg leading-relaxed text-body">{howIWork.intro}</p>
           <div className="grid grid-cols-1 border-t border-ink min-[440px]:grid-cols-2">
