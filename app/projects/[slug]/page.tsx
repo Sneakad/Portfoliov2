@@ -8,7 +8,10 @@ import SiteHeader from '@/components/home/SiteHeader';
 import SimpleProject from '@/components/simple/SimpleProject';
 import ProjectCover from '@/components/home/ProjectCover';
 import ContactForm from '@/components/home/ContactForm';
-import { homeProjects, site } from '@/data/home';
+import ArchDiagram from '@/components/home/ArchDiagram';
+import JsonLd from '@/components/JsonLd';
+import { filled, homeProjects, site } from '@/data/home';
+import { PERSON_ID, SITE_URL, WEBSITE_ID, projectNode, projectUrl, seo } from '@/data/seo';
 
 type Params = { slug: string };
 
@@ -22,7 +25,50 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const p = homeProjects.find((x) => x.id === slug);
   if (!p) return {};
-  return { title: `${p.name} — Aditya Mondal`, description: p.description };
+  const title = `${p.name}: ${p.tag} case study`;
+  const description = `Case study by Aditya Mondal. ${p.description}`;
+  const url = `/projects/${p.id}`;
+  return {
+    title,
+    description,
+    keywords: [p.name, ...p.stack.split(' · '), 'Aditya Mondal', 'case study'],
+    alternates: { canonical: url },
+    openGraph: { type: 'article', url, title: `${title} · Aditya Mondal`, description, siteName: seo.shortTitle, authors: [SITE_URL] },
+    twitter: { card: 'summary_large_image', title: `${title} · Aditya Mondal`, description, creator: seo.twitterHandle },
+  };
+}
+
+function projectJsonLd(p: (typeof homeProjects)[number]) {
+  const url = projectUrl(p);
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        '@id': `${url}#page`,
+        url,
+        name: `${p.name}: ${p.tag} case study`,
+        description: p.description,
+        inLanguage: 'en',
+        isPartOf: { '@id': WEBSITE_ID },
+        author: { '@id': PERSON_ID },
+        about: { '@id': `${url}#app` },
+        mainEntity: { '@id': `${url}#app` },
+        breadcrumb: { '@id': `${url}#breadcrumb` },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${url}#breadcrumb`,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Aditya Mondal', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Projects', item: `${SITE_URL}/#projects` },
+          { '@type': 'ListItem', position: 3, name: p.name, item: url },
+        ],
+      },
+      projectNode(p),
+      { '@type': 'Person', '@id': PERSON_ID, name: site.name, url: SITE_URL },
+    ],
+  };
 }
 
 function Head({ n, title }: { n: string; title: string }) {
@@ -44,13 +90,14 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
 
   return (
     <>
+    <JsonLd data={projectJsonLd(p)} />
     <div className="simple:hidden">
     <main className="min-h-screen bg-paper text-ink">
       <SiteHeader page="project" />
 
       <div className="border-b border-ink">
         <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between px-4 font-mono text-xs uppercase tracking-[0.08em] md:px-10">
-          <Link href="/#projects" className="u-link">← All projects</Link>
+          <Link href="/#projects" className="u-link inline-flex min-h-11 items-center">← All projects</Link>
           <span className="hidden text-muted-ink sm:inline">Case study {p.n} / 0{homeProjects.length} · {p.tag}</span>
         </div>
       </div>
@@ -63,7 +110,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
         </div>
         <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
           <div className="flex flex-col gap-6">
-            <h1 className="font-pixel text-[72px] leading-[0.9] sm:text-[104px] xl:text-[144px]">{p.name}</h1>
+            <h1 className="break-words font-pixel text-[54px] leading-[0.9] min-[420px]:text-[72px] sm:text-[104px] xl:text-[144px]">{p.name}</h1>
             <p className="max-w-[760px] text-xl leading-snug text-body md:text-2xl">{p.description}</p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -78,7 +125,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
           </div>
         </div>
         <dl className="grid grid-cols-2 border-y border-ink md:grid-cols-4">
-          {d.meta.map((m) => (
+          {d.meta.filter((m) => filled(m.v)).map((m) => (
             <div key={m.k} className="flex flex-col gap-2 py-5 pr-6">
               <dt className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-ink">{m.k}</dt>
               <dd className="text-lg font-medium">{m.v}</dd>
@@ -91,7 +138,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
       <figure className="mx-auto flex max-w-[1440px] flex-col gap-3 px-4 md:px-10">
         <div className="border border-ink">
           <div className="flex h-8 items-center justify-between bg-ink px-3 font-mono text-[11px] tracking-[0.06em] text-paper">
-            <span>fig.{p.n} — {p.id}.dith — <span className="hidden sm:inline">interactive · move to disperse, click to play</span><span className="sm:hidden">tap to play</span></span>
+            <span>fig.{p.n} · {p.id} · <span className="hidden sm:inline">interactive · point and click to play</span><span className="sm:hidden">tap to play</span></span>
             <span aria-hidden="true" className="flex gap-1.5">
               <span className="h-[9px] w-[9px] border border-paper" />
               <span className="h-[9px] w-[9px] border border-paper" />
@@ -132,40 +179,13 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-16">
           <Head n="03" title="How it works" />
           <div className="flex flex-col gap-5">
-            <div className="grid grid-cols-1 items-center gap-2 md:grid-cols-[minmax(0,1fr)_48px_minmax(0,1fr)_48px_minmax(0,1fr)] md:gap-0">
-              <div className="flex flex-col gap-1.5 border border-ink p-5">
-                <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-ink">Client</span>
-                <span className="text-xl font-semibold">{d.arch.client}</span>
-              </div>
-              <span aria-hidden="true" className="text-center font-mono text-lg">→</span>
-              <div className="flex flex-col gap-1.5 border border-ink bg-acc p-5">
-                <span className="font-mono text-[11px] uppercase tracking-[0.08em]">API</span>
-                <span className="text-xl font-semibold">{d.arch.api}</span>
-              </div>
-              <span aria-hidden="true" className="text-center font-mono text-lg">→</span>
-              <div className="flex flex-col gap-1.5 border border-ink bg-ink p-5 text-paper">
-                <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#B4B3AB]">{d.arch.coreLabel}</span>
-                <span className="text-xl font-semibold">{d.arch.core}</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_48px_minmax(0,1fr)_48px_minmax(0,1fr)]">
-              <span className="hidden md:block" />
-              <span className="hidden md:block" />
-              <div className="flex flex-col items-center gap-2">
-                <span aria-hidden="true" className="font-mono text-lg">↓</span>
-                <div className="flex flex-col gap-1.5 self-stretch border border-ink p-5">
-                  <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-ink">Store</span>
-                  <span className="text-xl font-semibold">{d.arch.store}</span>
-                </div>
-              </div>
-            </div>
-            <p className="border border-dashed border-[#8A8980] px-[18px] py-4 font-mono text-[13px] leading-relaxed text-muted-ink">{d.decision}</p>
+            <ArchDiagram flows={d.flows} name={p.name} />
           </div>
         </section>
 
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-16">
           <Head n="04" title="Outcome" />
-          <div className="grid grid-cols-1 border-t border-ink sm:grid-cols-3">
+          <div className="grid grid-cols-1 border-t border-ink sm:grid-cols-2">
             {d.outcome.map((o) => (
               <div key={o.k} className="flex flex-col gap-2 pr-6 pt-6">
                 <span className="font-pixel text-[30px] leading-[1.1]">{o.k}</span>
@@ -198,7 +218,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
           </div>
           <footer className="flex flex-wrap justify-between gap-3 border-t border-[#3A3934] pt-5 font-mono text-xs text-[#B4B3AB]">
             <span>© {new Date().getFullYear()} {site.name}</span>
-            <Link href="/" className="hover:bg-acc hover:text-ink">Back to home</Link>
+            <Link href="/" className="inline-flex min-h-11 items-center px-1 hover:bg-acc hover:text-ink">Back to home</Link>
           </footer>
         </div>
       </section>

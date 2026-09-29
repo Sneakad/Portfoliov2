@@ -22,19 +22,27 @@ export default function SignalStrip({ segments, start = 2022, end = 2027 }: { se
     if (!cv) return;
     const ctx = cv.getContext('2d')!;
     const reduced = prefersReducedMotion();
-    let img: ImageData | null = null, raf = 0, visible = true;
+    let img: ImageData | null = null, raf = 0, visible = false, lastKey = '';
     const t0 = performance.now();
     const stopObs = observeVisible(cv, (v) => (visible = v));
+    const ACC = readAccent(cv);
+    const cell = 4;
+    let cssW = cv.clientWidth, cssH = cv.clientHeight;
+    const ro = new ResizeObserver(([en]) => { cssW = en.contentRect.width; cssH = en.contentRect.height; });
+    ro.observe(cv);
 
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
       if (!visible) return;
       const t = reduced ? 0 : (now - t0) / 1000;
-      const cell = 4;
-      const W = Math.max(8, Math.round(cv.clientWidth / cell)), H = Math.max(8, Math.round(cv.clientHeight / cell));
+      const W = Math.max(8, Math.round(cssW / cell)), H = Math.max(8, Math.round(cssH / cell));
+      // the strip only changes 6×/s (marching outline) or on hover, so skip identical frames
+      const key = `${W}x${H}:${Math.floor(t * 6)}:${hovRef.current}`;
+      if (key === lastKey) return;
+      lastKey = key;
       if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; img = null; }
       if (!img) img = ctx.createImageData(W, H);
-      const d = img.data, ACC = readAccent(cv), hov = hovRef.current, last = segments.length - 1;
+      const d = img.data, hov = hovRef.current, last = segments.length - 1;
       const starts = segments.map((g) => Math.round(((g.from - start) / span) * W));
       const blink = Math.floor(t * 2) % 2 === 0;
       for (let x = 0; x < W; x++) {
@@ -63,7 +71,7 @@ export default function SignalStrip({ segments, start = 2022, end = 2027 }: { se
       if (reduced) cancelAnimationFrame(raf);
     };
     raf = requestAnimationFrame(tick);
-    return () => { cancelAnimationFrame(raf); stopObs(); };
+    return () => { cancelAnimationFrame(raf); stopObs(); ro.disconnect(); };
   }, [segments, start, span]);
 
   const pick = (e: React.PointerEvent<HTMLDivElement>) => {

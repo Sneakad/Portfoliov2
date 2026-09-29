@@ -1,8 +1,10 @@
 // Nav + footer for the Simple view: white page, narrow column, your accent as highlight.
 import Link from 'next/link';
 import { ArrowUpRight, FileText, Github, Linkedin, MessageCircle, Twitter } from 'lucide-react';
+import LogoMark from '@/components/home/LogoMark';
 import ModeToggle from '@/components/home/ModeToggle';
 import { site } from '@/data/home';
+import { seo } from '@/data/seo';
 
 export const SOCIALS = [
   { label: 'GitHub', handle: 'Sneakad', href: site.github, Icon: Github },
@@ -16,16 +18,16 @@ export function SimpleNav({ home = true }: { home?: boolean }) {
   return (
     <header className="sticky top-0 z-40 border-b border-[#EEEEEE] bg-white/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-[720px] items-center justify-between gap-4 px-5">
-        <Link href={home ? '#s-top' : '/'} className="flex items-center gap-2.5 font-semibold tracking-tight">
-          <span aria-hidden="true" className="grid h-7 w-7 place-items-center rounded-md bg-acc text-[11px] font-bold text-ink">AM</span>
+        <Link href={home ? '#s-top' : '/'} className="flex min-h-11 min-w-11 items-center gap-2.5 font-semibold tracking-tight">
+          <LogoMark size={28} className="rounded-md" />
           <span className="hidden sm:inline">Aditya Mondal</span>
         </Link>
         <nav aria-label="Primary" className="flex items-center gap-1 text-sm text-[#555]">
           <a href={`${base}#s-work`} className="hidden rounded-md px-2.5 py-1.5 hover:bg-[#F4F4F4] hover:text-ink sm:block">Work</a>
           <a href={`${base}#s-projects`} className="hidden rounded-md px-2.5 py-1.5 hover:bg-[#F4F4F4] hover:text-ink sm:block">Projects</a>
           <a href={home ? '#s-contact' : '#s-contact'} className="rounded-md px-2.5 py-1.5 hover:bg-[#F4F4F4] hover:text-ink">Contact</a>
-          <span className="ml-1.5 [&_button]:h-9 [&_button]:rounded-md [&_button]:border-[#E5E5E5] [&_button]:normal-case [&_button]:tracking-normal">
-            <ModeToggle />
+          <span className="ml-2.5">
+            <ModeToggle from="simple" />
           </span>
         </nav>
       </div>
@@ -59,6 +61,7 @@ export function SimpleFooter() {
               </a>
             </li>
           ))}
+          {site.showResume && (
           <li className="sm:col-span-2">
             <a
               href={site.resumeUrl}
@@ -69,7 +72,9 @@ export function SimpleFooter() {
               <ArrowUpRight aria-hidden="true" className="ml-auto h-4 w-4" />
             </a>
           </li>
+          )}
         </ul>
+        <p className="text-[14px] leading-relaxed text-[#666]">{seo.bio}</p>
         <div className="flex flex-wrap justify-between gap-2 text-[13px] text-[#888]">
           <span>© {new Date().getFullYear()} {site.name}</span>
           <span>{site.location}</span>

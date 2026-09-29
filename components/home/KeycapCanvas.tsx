@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { BAYER, INK, WHITE, fitCanvas, grey, observeVisible, prefersReducedMotion, rand, readAccent } from '@/lib/dither';
+import { BAYER, INK, WHITE, grey, observeVisible, prefersReducedMotion, rand, readAccent } from '@/lib/dither';
 
 type Pt = [number, number];
 type Proj = (x: number, y: number, z: number) => Pt;
@@ -82,16 +82,29 @@ export default function KeycapCanvas({ className }: { className?: string }) {
     const off = document.createElement('canvas');
     const o = off.getContext('2d', { willReadFrequently: true })!;
     const ctx = cv.getContext('2d')!;
-    const lctx = lg.getContext('2d', { willReadFrequently: true })!;
+    const lctx = lg.getContext('2d')!;
     let img: ImageData | null = null;
     let visible = true;
     const stopObs = observeVisible(cv, (v) => (visible = v));
+    // read once: getComputedStyle / clientWidth every frame force style + layout work
+    const pal = [INK, readAccent(cv), WHITE];
+    let cssW = cv.clientWidth, cssH = cv.clientHeight;
+    const ro = new ResizeObserver(([en]) => { cssW = en.contentRect.width; cssH = en.contentRect.height; });
+    ro.observe(cv);
+    // dot size: 2 CSS px, coarser on low-end devices and whenever frames keep running long
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    let slow = (nav.hardwareConcurrency || 8) <= 4 || (nav.deviceMemory || 8) <= 4 ? 1 : 0, ema = 0, samples = 0;
+    // 30fps is plenty for dither. While the page is scrolling the keys hold still (resuming ~150ms
+    // after it stops), so scrolling over the hero never competes with canvas work.
+    let lastDraw = 0, lastScroll = -1e4;
+    const onScroll = () => { lastScroll = performance.now(); };
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     const mouse = { x: -99, y: -99, on: false };
     const light = { x: 0, y: 0, init: false };
     const press: Record<string, number> = {};
     const clicks: Record<number, number> = {};
-    const parts: { x: number; y: number; ch: string; life: number; vx: number }[] = [];
+    const parts: { x: number; y: number; ch: string; life: number; w: number }[] = [];
     let legends: Legend[] = [];
     let T: [number, number, number] = [1, 0, 0];
     let wantPress = false, frame = 0, raf = 0;
@@ -158,8 +171,15 @@ export default function KeycapCanvas({ className }: { className?: string }) {
         const p = ease('c' + idx, Math.max(clickP, typing), clickP >= 1 ? 0.6 : 0.38);
         const lift = ease('l' + idx, idx === hotIdx ? 1 : 0, 0.25);
         if (prev < 0.6 && p >= 0.6) {
+          // the glyph pops out just above the cluster's top edge (oy - 12),
+          // lined up with the pressed key, so it never floats across the rows behind it
           const top = P(kx + sx / 2, ky + u / 2, 12);
-          parts.push({ x: top[0], y: top[1] - 6, ch: GLYPH[K.lab] || K.lab, life: 1, vx: (Math.random() - 0.5) * 0.6 });
+          const ch = GLYPH[K.lab] || K.lab, w = ch.length * 7 + 12, y0 = oy - 22;
+          // a new glyph replaces any live one it would overlap, so they never pile up on each other
+          for (let q = parts.length - 1; q >= 0; q--) {
+            if (Math.abs(parts[q].x - top[0]) < (parts[q].w + w) / 2 + 4 && Math.abs(parts[q].y - y0) < 20) parts.splice(q, 1);
+          }
+          parts.push({ x: top[0], y: y0, ch, life: 1, w });
         }
         const wl = wt * 2.2 - (K.c + K.r) * 0.45, wave = wl > 0 && wl < 1 ? Math.sin(wl * Math.PI) * 11 : 0;
         const bob = Math.sin(t * 1.3 + idx * 0.9) * 0.6;
@@ -171,7 +191,7 @@ export default function KeycapCanvas({ className }: { className?: string }) {
       o.font = `700 11px ${FONTS.mono}`;
       for (let q = parts.length - 1; q >= 0; q--) {
         const pt = parts[q];
-        pt.y -= 0.9; pt.x += pt.vx; pt.life -= 0.018;
+        pt.y -= 0.6; pt.life -= 0.018; // straight up, each glyph in its own lane
         if (pt.life <= 0) { parts.splice(q, 1); continue; }
         if (pt.life > 0.25 || Math.floor(pt.life * 40) % 2 === 0) {
           const tw = o.measureText(pt.ch).width + 8;
@@ -183,12 +203,15 @@ export default function KeycapCanvas({ className }: { className?: string }) {
       o.setTransform(1, 0, 0, 1, 0, 0);
     };
 
-    const drawLegends = (W: number, H: number) => {
-      const W2 = W * 2, H2 = H * 2;
+    // Legends: plain black text on a transparent layer at CSS resolution, so labels stay sharp while
+    // the keys are dithered. No CSS filter or blend mode on this layer: those made the browser re-filter
+    // and re-blend it on every scroll frame. (No per-frame getImageData threshold either.)
+    const drawLegends = (W: number) => {
+      const W2 = Math.max(8, Math.round(cssW)), H2 = Math.max(8, Math.round(cssH)), s = W2 / W;
       if (lg.width !== W2 || lg.height !== H2) { lg.width = W2; lg.height = H2; }
       lctx.setTransform(1, 0, 0, 1, 0, 0);
       lctx.clearRect(0, 0, W2, H2);
-      lctx.setTransform(2 * T[0], 0, 0, 2 * T[0], 2 * T[1], 2 * T[2]);
+      lctx.setTransform(s * T[0], 0, 0, s * T[0], s * T[1], s * T[2]);
       lctx.fillStyle = '#111110';
       lctx.textAlign = 'center';
       lctx.textBaseline = 'middle';
@@ -201,22 +224,21 @@ export default function KeycapCanvas({ className }: { className?: string }) {
         lctx.restore();
       }
       lctx.setTransform(1, 0, 0, 1, 0, 0);
-      const im = lctx.getImageData(0, 0, W2, H2), d = im.data;
-      for (let i = 3; i < d.length; i += 4) {
-        if (d[i] > 110) { d[i - 3] = 17; d[i - 2] = 17; d[i - 1] = 16; d[i] = 255; } else d[i] = 0;
-      }
-      lctx.putImageData(im, 0, 0);
     };
 
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
       if (!visible) return;
+      if (frame > 0 && (now - lastScroll < 150 || now - lastDraw < 32)) return;
+      lastDraw = now;
+      const s0 = performance.now();
       frame++;
       const t = reduced ? 2 : (now - t0) / 1000;
-      const { W, H } = fitCanvas(cv, 2);
+      const cell = Math.min(5, 2 + slow);
+      const W = Math.max(8, Math.round(cssW / cell)), H = Math.max(8, Math.round(cssH / cell));
+      if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
       if (off.width !== W || off.height !== H) { off.width = W; off.height = H; img = null; }
       if (!img || img.width !== W || img.height !== H) img = ctx.createImageData(W, H);
-      const pal = [INK, readAccent(cv), WHITE];
       const tx = mouse.on ? mouse.x : W * (0.5 + 0.45 * Math.cos(t * 0.45));
       const ty = mouse.on ? mouse.y : H * (0.5 + 0.35 * Math.sin(t * 0.45));
       if (!light.init) { light.x = tx; light.y = ty; light.init = true; }
@@ -225,8 +247,8 @@ export default function KeycapCanvas({ className }: { className?: string }) {
       o.clearRect(0, 0, W, H);
       scene(W, H, t);
       const src = o.getImageData(0, 0, W, H).data, d = img.data;
-      // hover: wide, stretchy scatter (legends stay sharp on their own layer)
-      const R2 = 1300;
+      // hover: a gentle scatter around the cursor (legends stay sharp on their own layer)
+      const R2 = 650;
       for (let y = 0; y < H; y++) {
         const br = BAYER[y & 7];
         for (let x = 0; x < W; x++) {
@@ -234,11 +256,11 @@ export default function KeycapCanvas({ className }: { className?: string }) {
           if (mouse.on) {
             dxm = x - mouse.x; dym = y - mouse.y;
             const dd = dxm * dxm + dym * dym;
-            if (dd < R2 * 4) { push = Math.exp(-dd / R2); amt += push * 13; }
+            if (dd < R2 * 4) { push = Math.exp(-dd / R2); amt += push * 6; }
           }
           let sx = x, sy = y;
           if (amt > 0.3) { sx += (rand(x, y, frame) * 2 - 1) * amt * 1.5; sy += (rand(y, x, frame + 11) * 2 - 1) * amt * 0.8; }
-          if (push > 0) { sx -= dxm * push * 0.3; sy -= dym * push * 0.3; }
+          if (push > 0) { sx -= dxm * push * 0.12; sy -= dym * push * 0.12; }
           const ix = sx | 0, iy = sy | 0, k = (y * W + x) * 4;
           if (ix < 0 || iy < 0 || ix >= W || iy >= H) { d[k + 3] = 0; continue; }
           const si = (iy * W + ix) * 4;
@@ -251,13 +273,39 @@ export default function KeycapCanvas({ className }: { className?: string }) {
         }
       }
       ctx.putImageData(img, 0, 0);
-      drawLegends(W, H);
+      drawLegends(W);
       if (reduced && frame > 2) cancelAnimationFrame(raf);
+      // adaptive quality: frames that keep costing > ~12ms get bigger dots (up to 3 steps)
+      const ms = performance.now() - s0;
+      ema = samples++ ? ema * 0.85 + ms * 0.15 : ms;
+      if (samples > 8 && ema > 12 && slow < 3) { slow++; samples = 0; }
     };
-    raf = requestAnimationFrame(tick);
+
+    // Start only once the page has loaded and the browser is idle, so the animation never competes
+    // with the first paint of the headline (the LCP). Pointing at the keys starts it right away.
+    let started = false, idleId = 0;
+    const start = () => {
+      if (started) return;
+      started = true;
+      raf = requestAnimationFrame(tick);
+    };
+    const whenIdle = () => {
+      const w: Window = window; // older Safari has no requestIdleCallback
+      if (typeof w.requestIdleCallback === 'function') idleId = w.requestIdleCallback(start, { timeout: 2500 });
+      else idleId = w.setTimeout(start, 1200);
+    };
+    if (document.readyState === 'complete') whenIdle();
+    else window.addEventListener('load', whenIdle, { once: true });
+    cv.addEventListener('pointerenter', start, { once: true });
 
     return () => {
       cancelAnimationFrame(raf);
+      if (typeof window.cancelIdleCallback === 'function') window.cancelIdleCallback(idleId);
+      clearTimeout(idleId);
+      window.removeEventListener('load', whenIdle);
+      window.removeEventListener('scroll', onScroll);
+      cv.removeEventListener('pointerenter', start);
+      ro.disconnect();
       stopObs();
       cv.removeEventListener('pointermove', onMove);
       cv.removeEventListener('pointerleave', onLeave);
@@ -270,11 +318,16 @@ export default function KeycapCanvas({ className }: { className?: string }) {
       <canvas
         ref={ref}
         role="img"
-        aria-label="Fourteen dithered keycaps typing on their own; each press pops a small code glyph. Hover lifts a key, click presses it."
+        aria-label="Fourteen pixel-art keycaps typing on their own; each press pops a small code glyph. Hover lifts a key, click presses it."
         className="absolute inset-0 block h-full w-full touch-manipulation"
         style={{ imageRendering: 'pixelated', cursor: 'pointer' }}
       />
-      <canvas ref={lgRef} aria-hidden="true" className="pointer-events-none absolute inset-0 block h-full w-full" style={{ imageRendering: 'pixelated' }} />
+      <canvas
+        ref={lgRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 block h-full w-full"
+        style={{ imageRendering: 'auto' }}
+      />
     </div>
   );
 }

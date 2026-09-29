@@ -8,8 +8,8 @@ export interface Experience {
 export const experiences: Experience[] = [
   {
     year: "NOW",
-    title: "AI Engineer",
-    company: "Miivo",
+    title: "Software Engineer",
+    company: "Miivo AI",
   },
   {
     year: "2024",

@@ -1,60 +1,31 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import Lenis from 'lenis';
-import { gsap } from 'gsap';
 
 interface LenisProviderProps {
   children: React.ReactNode;
 }
 
 const LenisProvider = ({ children }: LenisProviderProps) => {
-  const lenisRef = useRef<Lenis | null>(null);
-
   useEffect(() => {
-    // Initialize Lenis
-    lenisRef.current = new Lenis({
-      duration: 1.2, // Smoothness duration
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing function
-      direction: 'vertical', // Scroll direction
-      gestureDirection: 'vertical', // Gesture direction
-      smooth: true, // Enable smooth scrolling
-      smoothTouch: false, // Disable smooth scrolling on touch devices for better performance
-      touchMultiplier: 2, // Touch sensitivity multiplier
-      infinite: false, // Disable infinite scrolling
+    // Lenis drives itself from a single rAF loop. Driving it from two clocks
+    // (rAF + gsap.ticker) makes its frame delta jump around and the scroll stutter.
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      touchMultiplier: 2,
+      autoRaf: true,
     });
 
-    // Expose Lenis instance globally for other components to use
-    if (typeof window !== 'undefined') {
-      // Small delay to ensure Lenis is fully initialized
-      setTimeout(() => {
-        (window as any).lenis = lenisRef.current;
-        console.log('Lenis initialized and exposed to window:', lenisRef.current);
-      }, 50);
-    }
-
-    // Integrate Lenis with GSAP
-    function raf(time: number) {
-      lenisRef.current?.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    // Optional: Add GSAP ticker integration
-    gsap.ticker.add((time) => {
-      lenisRef.current?.raf(time * 1000);
-    });
+    // Expose Lenis globally for components that scroll programmatically
+    (window as Window & { lenis?: Lenis }).lenis = lenis;
 
     return () => {
-      if (lenisRef.current) {
-        lenisRef.current.destroy();
-      }
-      if (typeof window !== 'undefined') {
-        delete (window as any).lenis;
-      }
-      gsap.ticker.remove((time) => {
-        lenisRef.current?.raf(time * 1000);
-      });
+      lenis.destroy();
+      delete (window as Window & { lenis?: Lenis }).lenis;
     };
   }, []);
 

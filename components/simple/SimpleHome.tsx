@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import ContactForm from '@/components/home/ContactForm';
+import GithubGraph from '@/components/home/GithubGraph';
 import { SimpleFooter, SimpleNav } from './SimpleChrome';
 import { homeProjects, howIWork, roles, site, stack, wins } from '@/data/home';
 
@@ -19,7 +20,7 @@ const Pill = ({ children }: { children: React.ReactNode }) => (
 );
 
 export default function SimpleHome() {
-  const skills = stack.flatMap((s) => s.v.split(' · ').filter((x) => !x.includes('—')));
+  const skills = stack.flatMap((s) => s.v.split(' · ').filter((x) => !x.includes(':')));
   return (
     <div className="min-h-screen bg-white text-ink">
       <SimpleNav />
@@ -30,7 +31,7 @@ export default function SimpleHome() {
             <span className="h-2 w-2 rounded-full bg-acc ring-1 ring-ink/40" />
             Open to work · {site.location}
           </span>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Hi, I’m Aditya</h1>
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Hi, I’m Aditya Mondal</h1>
           <p className="text-lg leading-relaxed text-[#444]">
             {site.headline} <span className="rounded bg-acc px-1 text-ink">{site.headlineHighlight}</span>.
           </p>
@@ -38,9 +39,11 @@ export default function SimpleHome() {
             <a href="#s-contact" className="rounded-lg bg-ink px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-acc hover:text-ink">
               Get in touch
             </a>
-            <a href={site.resumeUrl} className="rounded-lg border border-[#E5E5E5] px-4 py-2.5 text-sm font-medium transition-colors hover:border-ink">
-              Résumé
-            </a>
+            {site.showResume && (
+              <a href={site.resumeUrl} className="rounded-lg border border-[#E5E5E5] px-4 py-2.5 text-sm font-medium transition-colors hover:border-ink">
+                Résumé
+              </a>
+            )}
             <a href={site.github} target="_blank" rel="noreferrer" className="rounded-lg border border-[#E5E5E5] px-4 py-2.5 text-sm font-medium transition-colors hover:border-ink">
               GitHub
             </a>
@@ -80,17 +83,18 @@ export default function SimpleHome() {
               </li>
             ))}
           </ul>
+          {site.showGithubGraph && <GithubGraph user={site.githubUser} variant="simple" />}
         </section>
 
         {/* Projects */}
         <section className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
             <H2 id="s-projects">Projects</H2>
-            <p className="text-[15px] text-[#666]">Things I’ve built and shipped — two of them won hackathons.</p>
+            <p className="text-[15px] text-[#666]">Things I’ve built and shipped. Two of them won hackathons.</p>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {homeProjects.map((p) => (
-              <article key={p.id} className="flex flex-col overflow-hidden rounded-xl border border-[#EAEAEA] transition-colors hover:border-ink">
+              <article key={p.id} className="flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#EAEAEA] transition-colors hover:border-ink">
                 <Link href={`/projects/${p.id}`} className="relative block aspect-[16/10] overflow-hidden border-b border-[#EAEAEA] bg-[#FAFAFA]">
                   <Image src={p.image} alt={`${p.name} screenshot`} fill sizes="(min-width: 640px) 340px, 100vw" className="object-cover object-top" />
                 </Link>
@@ -104,8 +108,8 @@ export default function SimpleHome() {
                     {p.stack.split(' · ').filter((x) => !x.startsWith('[')).map((t) => <Pill key={t}>{t}</Pill>)}
                   </div>
                   <div className="mt-auto flex gap-2 pt-2 text-[13px] font-medium">
-                    <Link href={`/projects/${p.id}`} className="rounded-md bg-ink px-2.5 py-1 text-white hover:bg-acc hover:text-ink">Case study</Link>
-                    <a href={p.live} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md border border-[#E5E5E5] px-2.5 py-1 hover:border-ink">
+                    <Link href={`/projects/${p.id}`} className="rounded-md bg-ink px-3 py-2 text-white hover:bg-acc hover:text-ink">Case study</Link>
+                    <a href={p.live} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-md border border-[#E5E5E5] px-3 py-2 hover:border-ink">
                       Website <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
                     </a>
                   </div>
@@ -146,7 +150,7 @@ export default function SimpleHome() {
         <section className="flex flex-col gap-4">
           <H2 id="s-contact">Get in touch</H2>
           <p className="text-[15px] leading-relaxed text-[#555]">
-            Hiring a software engineer? Leave your email and a line about the role — I’ll get back to you.
+            Got something to ship? Leave your email and a line about it. Let’s talk!
           </p>
           <ContactForm variant="light" />
         </section>

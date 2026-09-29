@@ -3,8 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import ContactForm from '@/components/home/ContactForm';
+import ArchDiagram from '@/components/home/ArchDiagram';
 import { SimpleFooter, SimpleNav } from './SimpleChrome';
-import type { HomeProject } from '@/data/home';
+import { filled, type HomeProject } from '@/data/home';
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -21,7 +22,7 @@ export default function SimpleProject({ p, next }: { p: HomeProject; next: HomeP
     <div className="min-h-screen bg-white text-ink">
       <SimpleNav home={false} />
       <main className="mx-auto flex max-w-[720px] flex-col gap-12 px-5 pb-20 pt-10">
-        <Link href="/#s-projects" className="inline-flex items-center gap-1.5 self-start text-sm text-[#666] hover:text-ink">
+        <Link href="/#s-projects" className="inline-flex min-h-11 items-center gap-1.5 self-start text-sm text-[#666] hover:text-ink">
           <ArrowLeft aria-hidden="true" className="h-4 w-4" /> All projects
         </Link>
 
@@ -49,7 +50,7 @@ export default function SimpleProject({ p, next }: { p: HomeProject; next: HomeP
         </div>
 
         <dl className="grid grid-cols-2 gap-x-6 gap-y-4 rounded-xl border border-[#EAEAEA] p-5 sm:grid-cols-4">
-          {d.meta.map((m) => (
+          {d.meta.filter((m) => filled(m.v)).map((m) => (
             <div key={m.k} className="flex flex-col gap-1">
               <dt className="text-[12px] uppercase tracking-wide text-[#888]">{m.k}</dt>
               <dd className="text-[14px] font-medium">{m.v}</dd>
@@ -88,11 +89,11 @@ export default function SimpleProject({ p, next }: { p: HomeProject; next: HomeP
               </span>
             ))}
           </div>
-          <p className="rounded-lg bg-[#FAFAFA] px-4 py-3 text-[14px] leading-relaxed text-[#666]">{d.decision}</p>
+          <ArchDiagram flows={d.flows} name={p.name} variant="simple" />
         </Block>
 
         <Block title="Outcome">
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {d.outcome.map((o) => (
               <li key={o.k} className="flex flex-col gap-1 rounded-xl border border-[#EAEAEA] p-4">
                 <span className="font-semibold">{o.k}</span>
@@ -104,7 +105,7 @@ export default function SimpleProject({ p, next }: { p: HomeProject; next: HomeP
 
         <section id="s-contact" className="flex scroll-mt-24 flex-col gap-4 rounded-xl border border-[#EAEAEA] p-5">
           <h2 className="text-xl font-semibold tracking-tight">Want something like {p.name} built?</h2>
-          <p className="text-[15px] text-[#555]">Leave your email and a line about the role — I’ll get back to you.</p>
+          <p className="text-[15px] text-[#555]">Leave your email and a line about the role, and I’ll get back to you.</p>
           <ContactForm topic={p.name} variant="light" />
         </section>
 

@@ -15,13 +15,13 @@ export default function ContactForm({ topic, variant = 'dark' }: { topic?: strin
 
   return (
     <form
-      className="grid w-full max-w-[760px] grid-cols-[minmax(0,1fr)_auto] gap-3"
+      className="grid w-full max-w-[760px] grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto]"
       action={async (formData) => {
         setPending(true);
         const res = await sendEmail(formData);
         setPending(false);
         if (res && 'error' in res && res.error) { toast.error(String(res.error)); return; }
-        toast.success('Sent — I’ll reply soon.');
+        toast.success('Sent! I’ll reply soon.');
       }}
     >
       <Toaster position="bottom-center" />
@@ -39,7 +39,7 @@ export default function ContactForm({ topic, variant = 'dark' }: { topic?: strin
       <button
         type="submit"
         disabled={pending}
-        className={`row-span-2 flex h-full min-h-14 items-center gap-3 bg-acc px-7 text-[17px] font-semibold text-ink disabled:opacity-60 ${light ? 'rounded-lg transition-colors hover:bg-ink hover:text-paper' : 'lift-btn-dark'}`}
+        className={`order-last flex h-full min-h-14 items-center justify-center gap-3 bg-acc px-7 sm:order-none sm:row-span-2 sm:justify-start text-[17px] font-semibold text-ink disabled:opacity-60 ${light ? 'rounded-lg transition-colors hover:bg-ink hover:text-paper' : 'lift-btn-dark'}`}
       >
         <span>{pending ? 'Sending…' : 'Send'}</span>
         <span aria-hidden="true">→</span>

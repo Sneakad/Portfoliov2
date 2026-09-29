@@ -5,13 +5,44 @@
 import KeycapCanvas from '@/components/home/KeycapCanvas';
 import ProjectCover from '@/components/home/ProjectCover';
 import SignalStrip from '@/components/home/SignalStrip';
+import EmailTile from '@/components/home/EmailTile';
+import GithubGraph from '@/components/home/GithubGraph';
 import WinCard from '@/components/home/WinCard';
 import ContactForm from '@/components/home/ContactForm';
 import SiteHeader from '@/components/home/SiteHeader';
 import SimpleHome from '@/components/simple/SimpleHome';
 import Link from 'next/link';
-import { site, timeline, roles, homeProjects, wins, stack, howIWork } from '@/data/home';
+import type { Metadata } from 'next';
+import JsonLd from '@/components/JsonLd';
+import { filled, site, timeline, roles, homeProjects, wins, stack, howIWork } from '@/data/home';
+import { PERSON_ID, SITE_URL, WEBSITE_ID, personNode, projectNode, seo, websiteNode } from '@/data/seo';
 
+export const metadata: Metadata = {
+  title: { absolute: seo.title },
+  alternates: { canonical: '/' },
+};
+
+// One @graph: the site, this profile page, the person it is about, and their projects.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    websiteNode(),
+    {
+      '@type': 'ProfilePage',
+      '@id': `${SITE_URL}/#profile`,
+      url: SITE_URL,
+      name: seo.title,
+      description: seo.description,
+      inLanguage: 'en',
+      isPartOf: { '@id': WEBSITE_ID },
+      mainEntity: { '@id': PERSON_ID },
+      about: { '@id': PERSON_ID },
+      dateModified: new Date().toISOString(),
+    },
+    personNode(),
+    ...homeProjects.map(projectNode),
+  ],
+};
 
 function SectionHead({ n, title, note }: { n: string; title: string; note?: string }) {
   return (
@@ -28,6 +59,7 @@ function SectionHead({ n, title, note }: { n: string; title: string; note?: stri
 export default function Home() {
   return (
     <>
+    <JsonLd data={jsonLd} />
     {/* Dither view (default). The Simple view below is shown instead when the reader toggles it. */}
     <div className="simple:hidden">
     <main className="min-h-screen bg-paper text-ink">
@@ -42,7 +74,7 @@ export default function Home() {
               {site.status}
             </span>
             <h1 className="font-pixel text-[64px] leading-[0.92] tracking-[-0.01em] sm:text-[88px] xl:text-[108px]">
-              Aditya
+              Aditya{' '}
               <br />
               Mondal
             </h1>
@@ -50,13 +82,16 @@ export default function Home() {
               {site.headline}{' '}
               <span className="bg-acc px-1 text-ink">{site.headlineHighlight}</span>.
             </p>
-            <p className="font-mono text-[13px] text-muted-ink">
-              Shipped at <span className="text-ink">{site.shippedAt.join(' · ')}</span>
-            </p>
             <div className="flex flex-wrap gap-3">
-              <a href={site.resumeUrl} className="lift-btn border border-ink bg-ink px-5 py-3 text-[15px] font-semibold text-paper">
-                Résumé ↓
-              </a>
+              {site.showResume ? (
+                <a href={site.resumeUrl} className="lift-btn border border-ink bg-ink px-5 py-3 text-[15px] font-semibold text-paper">
+                  Résumé ↓
+                </a>
+              ) : (
+                <a href="#contact" className="lift-btn border border-ink bg-ink px-5 py-3 text-[15px] font-semibold text-paper">
+                  Get in touch ↓
+                </a>
+              )}
               <a href={site.github} target="_blank" rel="noreferrer" className="lift-btn border border-ink bg-paper px-5 py-3 text-[15px] font-semibold">
                 GitHub ↗
               </a>
@@ -64,18 +99,11 @@ export default function Home() {
                 LinkedIn ↗
               </a>
             </div>
-            <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">
-              3 hackathon wins · {site.location} · {site.relocation}
-            </p>
           </div>
 
           <div className="flex flex-col border-t border-ink lg:border-l lg:border-r lg:border-t-0">
             <div className="relative h-[420px] sm:h-[520px] lg:h-full lg:min-h-[620px]">
               <KeycapCanvas className="absolute inset-0 h-full w-full" />
-            </div>
-            <div className="flex flex-wrap justify-between gap-2 border-t border-ink px-4 py-3 font-mono text-[11px] tracking-[0.04em] text-muted-ink">
-              <span>↳ 14 keys typing on their own — code pops out</span>
-              <span>Hover: lift a key · Click: press it</span>
             </div>
           </div>
         </div>
@@ -84,17 +112,17 @@ export default function Home() {
       {/* ---------- How I work (right under the hero: recruiters read this first) ---------- */}
       <section id="about" className="scroll-mt-16 mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-4 pt-20 md:px-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-16">
         <div className="flex flex-col gap-5">
-          <span className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">00 — How I work</span>
+          <span className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">00 · How I work</span>
           <h2 className="font-pixel text-[40px] leading-[1.02] md:text-[48px]">{howIWork.title}</h2>
           <p className="text-lg leading-relaxed text-body">{howIWork.intro}</p>
-          <div className="grid grid-cols-2 border-t border-ink">
+          <div className="grid grid-cols-1 border-t border-ink min-[440px]:grid-cols-2">
             <div className="flex flex-col gap-1.5 pr-4 pt-4">
               <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-ink">Based in</span>
               <span className="text-[17px]">{site.location}</span>
             </div>
-            <div className="flex flex-col gap-1.5 border-l border-ink pl-4 pt-4">
-              <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-ink">Open to</span>
-              <span className="text-[17px]">{site.relocation}</span>
+            <div className="mt-4 flex flex-col gap-1.5 border-t border-ink pt-4 min-[440px]:mt-0 min-[440px]:border-l min-[440px]:border-t-0 min-[440px]:pl-4">
+              <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-ink">Reach me</span>
+              <a href={`mailto:${site.email}`} className="u-link inline-flex min-h-11 items-center self-start text-[17px]">{site.email}</a>
             </div>
           </div>
         </div>
@@ -148,6 +176,11 @@ export default function Home() {
             </div>
           ))}
         </div>
+        {site.showGithubGraph && (
+          <div className="mt-10">
+            <GithubGraph user={site.githubUser} />
+          </div>
+        )}
       </section>
 
       {/* ---------- Projects ---------- */}
@@ -175,14 +208,14 @@ export default function Home() {
                 <p className="text-base leading-normal text-body">{p.description}</p>
                 <p className="font-mono text-xs text-muted-ink">{p.stack}</p>
                 <div className="mt-auto flex flex-wrap gap-5 pt-2 font-mono text-[13px]">
-                  <Link href={`/projects/${p.id}`} className="u-link">
+                  <Link href={`/projects/${p.id}`} className="u-link inline-flex min-h-11 items-center">
                     Case study →
                   </Link>
-                  <a href={p.live} target="_blank" rel="noreferrer" className="u-link">
+                  <a href={p.live} target="_blank" rel="noreferrer" className="u-link inline-flex min-h-11 items-center">
                     Live ↗
                   </a>
                   {p.code && (
-                    <a href={p.code} target="_blank" rel="noreferrer" className="u-link">
+                    <a href={p.code} target="_blank" rel="noreferrer" className="u-link inline-flex min-h-11 items-center">
                       Code ↗
                     </a>
                   )}
@@ -205,7 +238,7 @@ export default function Home() {
 
       {/* ---------- Stack ---------- */}
       <section id="stack" className="scroll-mt-16 mx-auto max-w-[1440px] px-4 py-20 md:px-10">
-        <SectionHead n="04" title="Stack" note={howIWork.now} />
+        <SectionHead n="04" title="Stack" note={filled(howIWork.now) ? howIWork.now : undefined} />
         <dl className="mt-10 border-t border-ink">
           {stack.map((s) => (
             <div key={s.k} className="row-hover grid grid-cols-[130px_minmax(0,1fr)] gap-4 border-b border-ink px-2 py-4 md:grid-cols-[220px_minmax(0,1fr)]">
@@ -221,17 +254,20 @@ export default function Home() {
       {/* ---------- Contact ---------- */}
       <section id="contact" className="scroll-mt-16 bg-ink text-paper">
         <div className="mx-auto flex max-w-[1440px] flex-col gap-10 px-4 py-20 md:px-10">
-          <p className="font-mono text-xs uppercase tracking-[0.08em] text-[#8A8980]">05 — Contact</p>
+          <p className="font-mono text-xs uppercase tracking-[0.08em] text-[#8A8980]">05 · Contact</p>
           <h2 className="max-w-[980px] font-pixel text-[44px] leading-[1.02] md:text-[72px]">
-            Hiring a software engineer? <span className="bg-acc px-2 text-ink">Let’s talk.</span>
+            Got something to ship? <span className="bg-acc px-2 text-ink">Let’s talk!</span>
           </h2>
           <ContactForm />
-          <div className="flex flex-wrap gap-3">
-            <a href={site.resumeUrl} className="lift-btn-dark border border-paper bg-paper px-5 py-3 text-[15px] font-semibold text-ink">
-              Résumé ↓
-            </a>
-          </div>
+          {site.showResume && (
+            <div className="flex flex-wrap gap-3">
+              <a href={site.resumeUrl} className="lift-btn-dark border border-paper bg-paper px-5 py-3 text-[15px] font-semibold text-ink">
+                Résumé ↓
+              </a>
+            </div>
+          )}
           <div className="grid grid-cols-2 border-t border-l border-[#3A3934] font-mono text-sm md:grid-cols-4">
+            <EmailTile email={site.email} className="col-span-2 md:col-span-4" />
             {[
               { k: 'GitHub', href: site.github },
               { k: 'LinkedIn', href: site.linkedin },
@@ -249,9 +285,9 @@ export default function Home() {
               </a>
             ))}
           </div>
+          <p className="max-w-[720px] text-base leading-relaxed text-[#B4B3AB]">{seo.bio}</p>
           <footer className="flex flex-wrap justify-between gap-3 font-mono text-xs text-[#8A8980]">
             <span>© {new Date().getFullYear()} {site.name}</span>
-            <span>Dithered by hand · Next.js · Geist Pixel</span>
           </footer>
         </div>
       </section>
