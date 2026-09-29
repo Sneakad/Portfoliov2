@@ -342,6 +342,7 @@ export default function ProjectCover({
   kind, label, height = 340, interactive = false,
 }: { kind: CoverKind; label: string; height?: number | string; interactive?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const hovRef = useRef(interactive);
   const autoRef = useRef(false); // on touch screens: playing because the cover is on screen
   const input = useRef<Input>({ ...IDLE });
@@ -382,10 +383,23 @@ export default function ProjectCover({
     const ro = new ResizeObserver(([en]) => { cssW = en.contentRect.width; cssH = en.contentRect.height; drawn = false; });
     ro.observe(cv);
 
-    // Dither art reads fine at 30fps. While the page is scrolling the cover holds its frame (it resumes
-    // ~150ms after scrolling stops), so scrolling never competes with canvas work.
+    // 30fps. While the page scrolls, idle or rewinding covers skip frames so scrolling stays smooth,
+    // but a hovered cover keeps drawing: pausing it (with its clock still running) made it sit frozen
+    // for 1-2s during Lenis's glide and then jump into the middle of its animation.
     let lastDraw = 0, lastScroll = -1e4;
-    const onScroll = () => { lastScroll = performance.now(); };
+    // Browsers don't update hover while a page is scrolling (only once it stops), so a cover that
+    // glides under a still pointer never got pointerenter. Track the pointer and hit-test on scroll.
+    const ptr = { x: -1, y: -1 };
+    const onPtr = (e: PointerEvent) => { if (e.pointerType !== 'touch') { ptr.x = e.clientX; ptr.y = e.clientY; } };
+    const onScroll = () => {
+      lastScroll = performance.now();
+      const el = wrapRef.current;
+      if (interactive || autoplay || ptr.x < 0 || !el || !visible) return;
+      const r = el.getBoundingClientRect();
+      const inside = ptr.x >= r.left && ptr.x <= r.right && ptr.y >= r.top && ptr.y <= r.bottom;
+      if (inside !== hovRef.current) { hovRef.current = inside; setHov(inside); }
+    };
+    window.addEventListener('pointermove', onPtr, { passive: true });
     window.addEventListener('scroll', onScroll, { passive: true });
 
     const draw = (t: number, prog: number) => {
@@ -459,7 +473,7 @@ export default function ProjectCover({
       }
       if (reduced) { if (!drawn || lastN !== I.n) { draw(3.5, 1); drawn = true; lastN = I.n; } return; }
       if (!visible || (drawn && !(on || moving))) return;
-      if (drawn && p !== 0 && (now - lastScroll < 150 || now - lastDraw < 32)) return;
+      if (drawn && p !== 0 && ((!on && now - lastScroll < 150) || now - lastDraw < 32)) return;
       lastDraw = now;
       const s0 = performance.now();
       draw(ct, p); drawn = true;
@@ -469,7 +483,7 @@ export default function ProjectCover({
       if (samples > 8 && ema > 9 && slow < 4) { slow++; samples = 0; }
     };
     raf = requestAnimationFrame(tick);
-    return () => { cancelAnimationFrame(raf); stopObs(); ro.disconnect(); window.removeEventListener('scroll', onScroll); };
+    return () => { cancelAnimationFrame(raf); stopObs(); ro.disconnect(); window.removeEventListener('scroll', onScroll); window.removeEventListener('pointermove', onPtr); };
   }, [kind, interactive]);
 
   // Touch taps aren't hovers: a tap fires enter + leave instantly, which used to stop an
@@ -512,6 +526,7 @@ export default function ProjectCover({
 
   return (
     <div
+      ref={wrapRef}
       onPointerEnter={enter}
       onPointerLeave={leave}
       onPointerMove={move}

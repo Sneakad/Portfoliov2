@@ -114,7 +114,7 @@ export const homeProjects: HomeProject[] = [
     },
   },
   {
-    n: '02', id: 'lern', slug: 'lern', name: 'Lern', tag: 'Edtech · Google PaLM', badge: 'Grand prize · Atlas Madness',
+    n: '02', id: 'lern', slug: 'lern', name: 'Lern', tag: 'Edtech · Generative AI', badge: 'Grand prize · Atlas Madness',
     description: 'Type any topic and get a full course in seconds, with chapters, quizzes and progress tracking, generated with Google’s PaLM (Bard).',
     stack: 'React · Node.js · Express · MongoDB · PaLM', live: 'https://lern.pages.dev/', code: 'https://github.com/anomic30/Lern',
     coverLabel: 'A topic typed into a prompt, answered by a course whose chapters write themselves',
@@ -140,7 +140,7 @@ export const homeProjects: HomeProject[] = [
     },
   },
   {
-    n: '03', id: 'codz', slug: 'codz', name: 'Codz', tag: 'Dev tools · OpenAI',
+    n: '03', id: 'codz', slug: 'codz', name: 'Codz', tag: 'Dev tools · AI',
     description: 'An AI coding workspace that generates, debugs, optimises and explains code in 30+ languages, with credits paid through Solana Pay.',
     stack: 'React · Node.js · Express · MongoDB · OpenAI · Solana', live: 'https://codz.pages.dev/', code: 'https://github.com/anomic30/codz',
     coverLabel: 'Code with a flagged bug; a review pass keeps sweeping and fixing bugs',
