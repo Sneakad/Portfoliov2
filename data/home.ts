@@ -29,7 +29,7 @@ export interface TimelineSegment {
 }
 
 export const timeline: TimelineSegment[] = [
-  { from: 2022.0, to: 2023.0, label: 'APICon.io', readout: '05 · 2022 — Software Developer Intern, APICon.io' },
+  { from: 2022.0, to: 2023.0, label: 'Supista', readout: '05 · 2022 — Software Developer Intern, Supista' },
   { from: 2023.0, to: 2023.4, label: 'GeeksforGeeks', readout: '04 · 2023 — Technical Content Writer, GeeksforGeeks' },
   { from: 2023.4, to: 2024.0, label: 'Boringmarketing', readout: '03 · 2023 – 2024 — Software Developer, Boringmarketing' },
   { from: 2024.0, to: 2025.0, label: 'OtherwiseAI', readout: '02 · 2024 – 2025 — Software Developer, OtherwiseAI' },
@@ -37,13 +37,25 @@ export const timeline: TimelineSegment[] = [
   { from: 2026.75, to: 2027.0, label: 'Next →', readout: 'Next — Software Engineer · AI Engineer, your team?' },
 ];
 
+/**
+ * An official company logo in /public/company_logos. `tile`: 'cover' = a square logo that fills its spot;
+ * 'dark' / 'light' = a wordmark that needs a dark / light badge behind it. w/h are the file's own size.
+ */
+export interface OrgLogoImg { src: string; tile: 'cover' | 'dark' | 'light'; w: number; h: number; mark?: string /* icon-only file for small spots */; bg?: string /* brand colour behind a wordmark */ }
+export interface Role { n: string; when: string; title: string; org: string; kind: string; logo?: OrgLogoImg }
+
 // Newest first. Hackathons live in the Wins section, not here.
-export const roles = [
-  { n: '01', when: '2025 — Sep 2026', title: 'Software Engineer', org: 'Miivo AI', kind: 'Full-time' },
-  { n: '02', when: '2024 — 2025', title: 'Software Developer', org: 'OtherwiseAI', kind: 'Full-time' },
-  { n: '03', when: '2023 — 2024', title: 'Software Developer', org: 'Boringmarketing', kind: 'Full-time' },
-  { n: '04', when: '2023', title: 'Technical Content Writer', org: 'GeeksforGeeks', kind: 'Part-time' },
-  { n: '05', when: '2022', title: 'Software Developer Intern', org: 'APICon.io', kind: 'Internship' },
+export const roles: Role[] = [
+  { n: '01', when: '2025 — Sep 2026', title: 'Software Engineer', org: 'Miivo AI', kind: 'Full-time',
+    logo: { src: '/company_logos/miivo-dark.svg', tile: 'dark', w: 70, h: 25, bg: '#006D3F' } },
+  { n: '02', when: '2024 — 2025', title: 'Software Developer', org: 'OtherwiseAI', kind: 'Full-time',
+    logo: { src: '/company_logos/otherwiselogo-dark.svg', tile: 'light', w: 222, h: 60, mark: '/company_logos/otherwise-mark.svg' } },
+  { n: '03', when: '2023 — 2024', title: 'Software Developer', org: 'Boringmarketing', kind: 'Full-time',
+    logo: { src: '/company_logos/boringmarketing_logo.jpg', tile: 'cover', w: 200, h: 200 } },
+  { n: '04', when: '2023', title: 'Technical Content Writer', org: 'GeeksforGeeks', kind: 'Part-time',
+    logo: { src: '/company_logos/geeksforgeeks_logo.jpg', tile: 'cover', w: 200, h: 200 } },
+  { n: '05', when: '2022', title: 'Software Developer Intern', org: 'Supista', kind: 'Internship',
+    logo: { src: '/company_logos/supista_logo.jpg', tile: 'cover', w: 200, h: 200 } },
 ];
 
 /** False for text still holding a `[PLACEHOLDER]`, so unfinished fields stay off the live site until filled in. */

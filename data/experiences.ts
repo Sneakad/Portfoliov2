@@ -29,6 +29,6 @@ export const experiences: Experience[] = [
   {
     year: "2022",
     title: "Software Developer Intern",
-    company: "APICon.io",
+    company: "Supista",
   },
 ];

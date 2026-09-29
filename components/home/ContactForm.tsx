@@ -51,7 +51,7 @@ export default function ContactForm({ topic, variant = 'dark' }: { topic?: strin
         required
         maxLength={5000}
         rows={2}
-        placeholder={topic ? `Want something like ${topic} built? Tell me about the role.` : 'What are you hiring for?'}
+        placeholder={topic ? `Building something like ${topic}? Tell me about it.` : 'What are you building? A role, a project, an idea…'}
         className={`resize-none py-3 ${field}`}
       />
     </form>

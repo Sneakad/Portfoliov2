@@ -6,6 +6,7 @@ import KeycapCanvas from '@/components/home/KeycapCanvas';
 import ProjectCover from '@/components/home/ProjectCover';
 import SignalStrip from '@/components/home/SignalStrip';
 import EmailTile from '@/components/home/EmailTile';
+import OrgLogo from '@/components/home/OrgLogo';
 import GithubGraph from '@/components/home/GithubGraph';
 import WinCard from '@/components/home/WinCard';
 import ContactForm from '@/components/home/ContactForm';
@@ -151,25 +152,31 @@ export default function Home() {
         <div className="mt-10 border-t border-ink">
           <a
             href="#contact"
-            className="grid grid-cols-[48px_minmax(0,1fr)] items-center gap-x-4 border-b border-ink bg-acc px-2 py-5 md:grid-cols-[64px_160px_minmax(0,1fr)_auto]"
+            className="grid grid-cols-[40px_36px_minmax(0,1fr)] items-center gap-x-3 gap-y-1 border-b border-ink bg-acc px-2 py-5 md:grid-cols-[64px_160px_40px_minmax(0,1fr)_auto] md:gap-x-4"
           >
             <span className="font-mono text-sm">Next</span>
             <span className="hidden font-mono text-sm md:block">2026 —</span>
+            {/* empty logo slot: your company here */}
+            <span aria-hidden="true" className="row-span-2 grid h-9 w-9 place-items-center border border-dashed border-ink font-mono text-sm md:row-span-1 md:h-10 md:w-10">?</span>
             <span className="text-lg font-semibold md:text-xl">Software Engineer · AI Engineer — your team?</span>
-            <span className="col-span-2 font-mono text-xs uppercase tracking-[0.08em] md:col-span-1">Open to work →</span>
+            <span className="col-start-3 font-mono text-xs uppercase tracking-[0.08em] md:col-start-auto">Open to work →</span>
           </a>
           {roles.map((r) => (
             <div
               key={r.n}
-              className="row-hover grid grid-cols-[48px_minmax(0,1fr)] items-center gap-x-4 gap-y-1 border-b border-ink px-2 py-5 md:grid-cols-[64px_160px_minmax(0,1fr)_auto]"
+              className="row-hover grid grid-cols-[40px_36px_minmax(0,1fr)] items-center gap-x-3 gap-y-1 border-b border-ink px-2 py-5 md:grid-cols-[64px_160px_40px_minmax(0,1fr)_auto] md:gap-x-4"
             >
               <span className="font-mono text-sm text-muted-ink">{r.n}</span>
               <span className="hidden font-mono text-sm md:block">{r.when}</span>
+              {/* every logo in the same square, in its own column, so the rows line up */}
+              <span className="row-span-2 h-9 w-9 md:row-span-1 md:h-10 md:w-10">
+                {r.logo ? <OrgLogo logo={r.logo} variant="tile" /> : <span aria-hidden="true" className="grid h-full w-full place-items-center bg-[#E4E3DB] font-mono text-sm">{r.org[0]}</span>}
+              </span>
               <span className="text-lg md:text-xl">
                 <span className="font-semibold">{r.title}</span>
                 <span className="text-muted-ink"> — {r.org}</span>
               </span>
-              <span className="col-start-2 font-mono text-xs uppercase tracking-[0.08em] text-muted-ink md:col-start-auto">
+              <span className="col-start-3 font-mono text-xs uppercase tracking-[0.08em] text-muted-ink md:col-start-auto">
                 <span className="md:hidden">{r.when} · </span>
                 {r.kind}
               </span>

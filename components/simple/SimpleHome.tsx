@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import ContactForm from '@/components/home/ContactForm';
 import GithubGraph from '@/components/home/GithubGraph';
+import OrgLogo from '@/components/home/OrgLogo';
 import { SimpleFooter, SimpleNav } from './SimpleChrome';
 import { homeProjects, howIWork, roles, site, stack, wins } from '@/data/home';
 
@@ -72,8 +73,8 @@ export default function SimpleHome() {
           <ul className="flex flex-col">
             {roles.map((r) => (
               <li key={r.n} className="flex items-center gap-4 border-b border-[#F0F0F0] py-3.5 last:border-0">
-                <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#EAEAEA] bg-[#FAFAFA] text-sm font-semibold">
-                  {r.org[0]}
+                <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full border border-[#EAEAEA] bg-[#FAFAFA] text-sm font-semibold">
+                  {r.logo ? <OrgLogo logo={r.logo} variant="avatar" /> : r.org[0]}
                 </span>
                 <span className="flex min-w-0 flex-col">
                   <span className="font-medium">{r.org}</span>
