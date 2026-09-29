@@ -242,11 +242,11 @@ export default function ModeToggle({ from }: { from: SiteMode }) {
           type="button"
           onClick={toggle}
           {...hoverProps}
-          aria-label="Switch to the dithered version of the site"
+          aria-label="Go 8-bit: switch to the pixel-art version of the site"
           className="relative flex h-9 items-center px-3 font-mono text-[11px] uppercase tracking-[0.08em] text-paper outline-none focus-visible:outline-2 focus-visible:outline-offset-[6px] focus-visible:outline-acc"
         >
           <DitherBody active={crumbling} />
-          <span aria-hidden="true" className="relative whitespace-pre">Dither view</span>
+          <span aria-hidden="true" className="relative whitespace-pre">Go 8-bit</span>
         </button>
       ) : (
         <button
