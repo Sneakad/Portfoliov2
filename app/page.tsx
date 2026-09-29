@@ -144,7 +144,7 @@ export default function Home() {
 
       {/* ---------- Experience ---------- */}
       <section id="experience" className="scroll-mt-16 mx-auto max-w-[1440px] px-4 py-20 md:px-10">
-        <SectionHead n="01" title="Experience" note="5 roles · 1 open slot" />
+        <SectionHead n="01" title="Experience" />
         <div className="mt-10">
           <SignalStrip segments={timeline} />
         </div>

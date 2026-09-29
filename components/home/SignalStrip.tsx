@@ -95,7 +95,7 @@ export default function SignalStrip({ segments, start = 2022, end = 2027 }: { se
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-3.5 border border-ink bg-ink px-4 pb-4 pt-5 text-paper md:px-6">
         <div className="flex justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.08em] text-[#B4B3AB]">
-          <span>signal.log — each block is a role, denser = more recent</span>
+          <span>signal.log — each block is a role</span>
           <span className="hidden sm:inline">Hover a block</span>
         </div>
         <div onPointerMove={pick} onPointerDown={pick} onPointerLeave={clear} className="cursor-pointer touch-manipulation">
