@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+/* simple:… applies when the reader switches to the plain, easy-to-read version */
+@custom-variant simple (&:where([data-mode="simple"], [data-mode="simple"] *));
 
 @theme inline {
   --color-background: var(--background);
@@ -41,9 +43,21 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Dither home tokens */
+  --color-ink: #111110;
+  --color-paper: #F1F0EA;
+  --color-acc: var(--acc);
+  --color-body: #3A3934;
+  --color-muted-ink: #57564F;
+  --font-pixel: var(--font-geist-pixel-square), var(--font-geist-mono), monospace;
 }
 
 :root {
+  /* Change --acc to re-theme the whole page — canvases read it live. */
+  --acc: #C5FA6E;
+  --ink: #111110;
+  --paper: #F1F0EA;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -113,12 +127,23 @@
 }
 
 @layer base {
+  /* Tailwind v4 no longer gives buttons a pointer cursor; every clickable control gets one */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  input[type="submit"]:not(:disabled),
+  summary,
+  label[for],
+  select {
+    cursor: pointer;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-red-hat-display), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
 
@@ -163,14 +188,7 @@
     min-height: 100vh;
   }
   
-  /* Cursor styles */
-  body {
-    cursor: none;
-  }
-  
-  body * {
-    cursor: none;
-  }
+  /* Cursor styles (old custom cursor — no longer mounted) */
   
   .cursor {
     position: absolute;
@@ -305,3 +323,42 @@
   }
   
 }
+
+/* ---------- Dither home ---------- */
+@layer utilities {
+  /* anything that lifts on hover reads as clickable, so it gets a pointer */
+  .lift-card, .lift-btn, .lift-btn-dark { cursor: pointer; }
+  .lift-card { transition: transform .18s ease, box-shadow .18s ease; }
+  .lift-card:hover { transform: translate(-4px, -4px); box-shadow: 8px 8px 0 var(--ink); }
+  .lift-btn { transition: transform .15s ease, box-shadow .15s ease; }
+  .lift-btn:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--ink); }
+  .lift-btn-dark { transition: transform .15s ease, box-shadow .15s ease; }
+  .lift-btn-dark:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--paper); }
+  /* primary (filled ink) buttons: the lift shadow is lime, so it shows against the dark button */
+  .lift-btn-primary:hover { box-shadow: 5px 5px 0 var(--acc); }
+  .row-hover { transition: background .12s ease; }
+  .row-hover:hover { background: var(--acc); }
+  .u-link { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+  .u-link:hover { background: var(--acc); }
+}
+:where(a, button, input, textarea):focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+::selection { background: var(--acc); color: var(--ink); }
+@media (prefers-reduced-motion: reduce) {
+  .lift-card, .lift-btn, .lift-btn-dark { transition: none; }
+  .lift-card:hover, .lift-btn:hover, .lift-btn-dark:hover { transform: none; }
+}
+
+/* ---------- Simple view: no dither, plain type, calm hovers ---------- */
+html[data-mode="simple"] .font-pixel { font-family: var(--font-geist-sans), system-ui, sans-serif; font-weight: 650; letter-spacing: -0.03em; }
+html[data-mode="simple"] .lift-card:hover,
+html[data-mode="simple"] .lift-btn:hover,
+html[data-mode="simple"] .lift-btn-dark:hover { transform: none; box-shadow: none; }
+html[data-mode="simple"] body { background: #ffffff; }
+
+/* ---------- GitHub graph levels: greens only (lime = --acc). Levels 1 and 3 are pixel checkers. ---------- */
+.gh-l0 { background: #E4E3DB; }
+.gh-l1 { background: repeating-conic-gradient(var(--acc) 0 25%, #E4E3DB 0 50%) 0 0 / 4px 4px; }
+.gh-l3 { background: repeating-conic-gradient(#3E7A12 0 25%, var(--acc) 0 50%) 0 0 / 4px 4px; }
+.gh-l4 { background: #3E7A12; }
+/* hovered day in the contribution graph */
+.gh-grid [data-d]:hover { outline: 2px solid var(--ink); outline-offset: 1px; position: relative; z-index: 1; }
