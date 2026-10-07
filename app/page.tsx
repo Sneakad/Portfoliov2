@@ -15,7 +15,8 @@ import SimpleHome from '@/components/simple/SimpleHome';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import JsonLd from '@/components/JsonLd';
-import { filled, site, timeline, roles, homeProjects, wins, stack, howIWork } from '@/data/home';
+import BuildProcess from '@/components/home/BuildProcess';
+import { site, timeline, roles, homeProjects, wins, howIWork, signalPath } from '@/data/home';
 import { PERSON_ID, SITE_URL, WEBSITE_ID, personNode, projectNode, seo, websiteNode } from '@/data/seo';
 
 export const metadata: Metadata = {
@@ -243,19 +244,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- Stack ---------- */}
+      {/* ---------- How I build ---------- */}
       <section id="stack" className="scroll-mt-16 mx-auto max-w-[1440px] px-4 py-20 md:px-10">
-        <SectionHead n="04" title="Stack" note={filled(howIWork.now) ? howIWork.now : undefined} />
-        <dl className="mt-10 border-t border-ink">
-          {stack.map((s) => (
-            <div key={s.k} className="row-hover grid grid-cols-[130px_minmax(0,1fr)] gap-4 border-b border-ink px-2 py-4 md:grid-cols-[220px_minmax(0,1fr)]">
-              <dt className="font-mono text-xs uppercase tracking-[0.08em] text-muted-ink">{s.k}</dt>
-              <dd className="text-lg">
-                {s.highlight ? <span className="bg-acc px-1">{s.v}</span> : s.v}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <SectionHead n="04" title={signalPath.title} note={signalPath.note} />
+        <BuildProcess />
       </section>
 
       {/* ---------- Contact ---------- */}

@@ -86,7 +86,7 @@ export default function SiteHeader({ page = 'home' }: { page?: 'home' | 'project
     { label: '01 Experience', href: `${base}#experience` },
     { label: '02 Projects', href: `${base}#projects` },
     { label: '03 Wins', href: `${base}#wins` },
-    { label: '04 Stack', href: `${base}#stack` },
+    { label: '04 Process', href: `${base}#stack` },
     { label: '05 Contact', href: `${base}#contact` },
   ];
 

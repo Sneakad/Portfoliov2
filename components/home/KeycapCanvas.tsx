@@ -96,9 +96,7 @@ export default function KeycapCanvas({ className }: { className?: string }) {
     let slow = (nav.hardwareConcurrency || 8) <= 4 || (nav.deviceMemory || 8) <= 4 ? 1 : 0, ema = 0, samples = 0;
     // 30fps is plenty for dither. While the page is scrolling the keys hold still (resuming ~150ms
     // after it stops), so scrolling over the hero never competes with canvas work.
-    let lastDraw = 0, lastScroll = -1e4;
-    const onScroll = () => { lastScroll = performance.now(); };
-    window.addEventListener('scroll', onScroll, { passive: true });
+    let lastDraw = 0;
 
     const mouse = { x: -99, y: -99, on: false };
     const light = { x: 0, y: 0, init: false };
@@ -229,7 +227,7 @@ export default function KeycapCanvas({ className }: { className?: string }) {
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
       if (!visible) return;
-      if (frame > 0 && (now - lastScroll < 150 || now - lastDraw < 32)) return;
+      if (frame > 0 && now - lastDraw < 32) return; // 30fps, also while scrolling
       lastDraw = now;
       const s0 = performance.now();
       frame++;
@@ -303,7 +301,6 @@ export default function KeycapCanvas({ className }: { className?: string }) {
       if (typeof window.cancelIdleCallback === 'function') window.cancelIdleCallback(idleId);
       clearTimeout(idleId);
       window.removeEventListener('load', whenIdle);
-      window.removeEventListener('scroll', onScroll);
       cv.removeEventListener('pointerenter', start);
       ro.disconnect();
       stopObs();

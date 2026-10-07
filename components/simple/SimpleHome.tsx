@@ -6,7 +6,7 @@ import ContactForm from '@/components/home/ContactForm';
 import GithubGraph from '@/components/home/GithubGraph';
 import OrgLogo from '@/components/home/OrgLogo';
 import { SimpleFooter, SimpleNav } from './SimpleChrome';
-import { homeProjects, howIWork, roles, site, stack, wins } from '@/data/home';
+import { homeProjects, howIWork, roles, signalPath, site, wins } from '@/data/home';
 
 function H2({ id, children }: { id?: string; children: React.ReactNode }) {
   return (
@@ -21,7 +21,6 @@ const Pill = ({ children }: { children: React.ReactNode }) => (
 );
 
 export default function SimpleHome() {
-  const skills = stack.flatMap((s) => s.v.split(' · ').filter((x) => !x.includes(':')));
   return (
     <div className="min-h-screen bg-white text-ink">
       <SimpleNav />
@@ -135,16 +134,31 @@ export default function SimpleHome() {
           </ul>
         </section>
 
-        {/* Skills */}
-        <section className="flex flex-col gap-4">
-          <H2>Skills</H2>
-          <div className="flex flex-wrap gap-1.5">
-            {skills.map((s) => (
-              <span key={s} className={`rounded-md px-2.5 py-1 text-[13px] ${/Gemini|OpenAI|LangChain/.test(s) ? 'bg-acc text-ink' : 'bg-ink text-white'}`}>
-                {s}
-              </span>
-            ))}
+        {/* How I build */}
+        <section className="flex flex-col gap-5">
+          <div className="flex flex-col gap-1.5">
+            <H2 id="s-ship">How I build</H2>
+            <p className="text-[15px] text-[#666]">{signalPath.intro}</p>
           </div>
+          <ol className="flex flex-col">
+            {signalPath.phases.map((p, i) => (
+              <li key={p.k} className="flex gap-4 border-b border-[#F0F0F0] py-4 last:border-0">
+                <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md bg-ink text-[12px] font-semibold tabular-nums text-white">{i + 1}</span>
+                <div className="flex min-w-0 flex-col gap-2">
+                  <p className="text-[15px] leading-relaxed text-[#444]">
+                    <strong className="font-semibold text-ink">{p.k}.</strong> {p.line}
+                  </p>
+                  <p className="text-[13px] text-[#666]">
+                    Output: <span className="rounded bg-acc px-1 text-ink">{p.out}</span>
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {p.tools.map((t) => <Pill key={t}>{t}</Pill>)}
+                    {p.ai.map((t) => <Pill key={t}>{t}</Pill>)}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
         </section>
 
         {/* Contact */}
