@@ -57,11 +57,17 @@ function Panel({ ph, n, live, onStep }: { ph: Phase; n: number; live?: boolean; 
   const T = (text: string) => (live ? <DitherText text={text} /> : text);
   const tools = [...ph.tools, ...ph.ai];
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-      <div className="flex flex-col gap-4 border-ink py-8 md:border-r md:pr-10">
+    // side by side from lg: on tablets the left column is too narrow for the number row + arrows
+    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <div className="flex flex-col gap-4 border-ink py-8 lg:border-r lg:pr-10">
+        {/* the arrows sit in the number row, which is the same height for every phase, so they never move */}
         <div className="flex items-end gap-4">
           <span className="font-pixel text-[88px] leading-[0.8] md:text-[112px]">{T(pad(n))}</span>
           <span className="pb-1 font-mono text-xs uppercase tracking-[0.14em] text-muted-ink">of 05</span>
+          <div className="ml-auto flex gap-2 pb-0.5 font-mono text-sm">
+            <button onClick={() => onStep?.(-1)} aria-label="Previous phase" className="lift-btn border border-ink bg-paper px-3 py-1.5">←</button>
+            <button onClick={() => onStep?.(1)} aria-label="Next phase" className="lift-btn border border-ink bg-paper px-3 py-1.5">→</button>
+          </div>
         </div>
         <h3 className="font-pixel text-[40px] leading-none md:text-[48px]">{T(ph.k)}</h3>
         <p className="text-lg leading-relaxed text-body">{T(ph.line)}</p>
@@ -69,12 +75,8 @@ function Panel({ ph, n, live, onStep }: { ph: Phase; n: number; live?: boolean; 
           <span className="text-muted-ink">out → </span>
           <span className="bg-acc px-1.5 py-0.5">{T(ph.out)}</span>
         </p>
-        <div className="mt-2 flex gap-2 font-mono text-sm">
-          <button onClick={() => onStep?.(-1)} aria-label="Previous phase" className="lift-btn border border-ink bg-paper px-3 py-1.5">←</button>
-          <button onClick={() => onStep?.(1)} aria-label="Next phase" className="lift-btn border border-ink bg-paper px-3 py-1.5">→</button>
-        </div>
       </div>
-      <div className="py-8 md:pl-10">
+      <div className="py-8 lg:pl-10">
         <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-ink">Toolkit</p>
         <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2">
           {tools.map((t, i) => (
