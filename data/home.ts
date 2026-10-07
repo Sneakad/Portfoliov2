@@ -235,3 +235,48 @@ export const stack = [
   { k: 'Tooling', v: 'Turborepo · Monorepos' },
   { k: 'Bonus', v: 'Figma: I can design the UI I build' },
 ];
+
+// "How I build": one feature from messy idea to production, in five phases.
+// AI is part of the toolkit (marked in `ai`), not the whole story.
+export const signalPath = {
+  title: 'How I build',
+  note: 'Idea to production',
+  intro: 'Whether it is a dashboard, an API or an AI agent, everything I build goes through the same five phases.',
+  phases: [
+    {
+      k: 'Listen',
+      line: 'Sit with the people doing the work until the real problem shows up.',
+      out: 'a written spec and test cases',
+      tools: ['User interviews', 'Workflow maps', 'Success criteria', 'Throwaway prototypes'],
+      ai: ['Golden datasets'],
+    },
+    {
+      k: 'Design',
+      line: 'Shape the data, the API and the screens before writing much code.',
+      out: 'a schema, an API contract and wireframes',
+      tools: ['Data modelling', 'API design', 'System design', 'MongoDB', 'SQL', 'Figma'],
+      ai: ['Prompt & tool design'],
+    },
+    {
+      k: 'Build',
+      line: 'The whole stack: UI, backend, and the AI that sits between them.',
+      out: 'a working product, end to end',
+      tools: ['TypeScript', 'React', 'Next.js', 'Node.js', 'Express', 'Tailwind'],
+      ai: ['Vercel AI SDK', 'LangChain', 'RAG', 'Embeddings', 'Tool calling', 'MCP'],
+    },
+    {
+      k: 'Harden',
+      line: 'Make it reliable. Nothing ships on vibes.',
+      out: 'tests and scores, not feelings',
+      tools: ['Testing', 'Queues & retries', 'Durable workflows', 'Inngest', 'Auth & validation'],
+      ai: ['Evals', 'Guardrails', 'Structured outputs', 'Human-in-the-loop'],
+    },
+    {
+      k: 'Ship',
+      line: 'Deploy it, watch it, and keep it fast and cheap.',
+      out: 'a live URL with dashboards behind it',
+      tools: ['Vercel', 'GCP', 'AWS', 'Docker', 'CI/CD', 'Observability'],
+      ai: ['Tracing', 'Cost & latency budgets'],
+    },
+  ],
+};
